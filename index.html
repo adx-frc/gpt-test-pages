@@ -18,7 +18,7 @@
     .err { padding: 12px 14px; background: #fef2f2; border: 1px solid #ef4444; border-radius: 10px; }
     code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
     label { display: block; font-weight: 600; margin-bottom: 6px; }
-    .small { font-size: 13px; color: #475569; }
+    .small { font-size: 13px; color: #475569; margin-top: 6px; }
     a { word-break: break-all; }
   </style>
 </head>
@@ -28,15 +28,16 @@
 
     <div class="note">
       <div><strong>Publishes</strong> a new file into <code>pages/</code> in this repo and returns a public GitHub Pages URL.</div>
-      <div class="small">
-        Token is used only in your browser to call GitHub API. Nothing is stored.
-      </div>
+      <div class="small">Token is used only in your browser to call GitHub API. Nothing is stored.</div>
     </div>
 
     <div class="row">
-      <label for="token">GitHub token (classic or fine-grained) with Contents: Write for this repo</label>
+      <label for="token">GitHub token (classic recommended) with repo / contents write access</label>
       <input id="token" type="password" placeholder="ghp_... / github_pat_..." autocomplete="off" />
-      <div class="small">Tip: fine-grained token → Repository access: only this repo → Permissions: Contents = Read and write.</div>
+      <div class="small">
+        Classic token: select scope <code>repo</code>.<br>
+        Fine-grained token: allow this repo + Permissions: Contents = Read and write.
+      </div>
     </div>
 
     <div class="row">
@@ -48,6 +49,9 @@
     <div class="row">
       <label for="html">Paste full HTML here</label>
       <textarea id="html" placeholder="<!doctype html> ..."></textarea>
+      <div class="small">
+        Tip: you can paste the whole GPT test page HTML that includes your slot and debug panel.
+      </div>
     </div>
 
     <div class="row btns">
@@ -104,6 +108,41 @@
         return n;
       }
 
+      function escapeHtml(s) {
+        return s.replace(/[&<>"']/g, function (c) {
+          return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+        });
+      }
+
+      async function getFileSha(apiUrl, token, branch) {
+        try {
+          var res = await fetch(apiUrl + "?ref=" + encodeURIComponent(branch), {
+            method: "GET",
+            headers: {
+              "Authorization": "token " + token,
+              "Accept": "application/vnd.github+json"
+            }
+          });
+          if (!res.ok) return null;
+          var data = await res.json();
+          return (data && data.sha) ? data.sha : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      async function putFile(apiUrl, token, bodyObj) {
+        return fetch(apiUrl, {
+          method: "PUT",
+          headers: {
+            "Authorization": "token " + token,
+            "Accept": "application/vnd.github+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(bodyObj)
+        });
+      }
+
       async function publish() {
         setStatus("Publishing…", "note");
 
@@ -124,7 +163,6 @@
         var path = PAGES_DIR + "/" + fileName;
 
         var apiUrl = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/" + encodeURIComponent(path);
-        // GitHub expects path segments, so fix encoding of '/'
         apiUrl = apiUrl.replace(/%2F/g, "/");
 
         var body = {
@@ -134,16 +172,8 @@
         };
 
         try {
-          var res = await fetch(apiUrl, {
-            method: "PUT",
-            headers: {
-              "Authorization": "token " + token,
-              "Accept": "application/vnd.github+json",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-          });
-
+          // 1) Publish unique file
+          var res = await putFile(apiUrl, token, body);
           var data = await res.json().catch(function(){ return null; });
 
           if (!res.ok) {
@@ -155,12 +185,36 @@
             return;
           }
 
+          // 2) Update stable latest.html
+          var latestPath = PAGES_DIR + "/latest.html";
+          var latestApiUrl = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/" + encodeURIComponent(latestPath);
+          latestApiUrl = latestApiUrl.replace(/%2F/g, "/");
+
+          var latestSha = await getFileSha(latestApiUrl, token, BRANCH);
+
+          var latestBody = {
+            message: "Update latest test page -> " + fileName,
+            content: base64EncodeUnicode(html),
+            branch: BRANCH
+          };
+          if (latestSha) latestBody.sha = latestSha;
+
+          var putLatest = await putFile(latestApiUrl, token, latestBody);
+
+          // 3) Public URLs
           var publicUrl = "https://" + OWNER + ".github.io/" + REPO + "/" + path;
+          var latestUrl = "https://" + OWNER + ".github.io/" + REPO + "/" + latestPath;
+
+          var latestNote = putLatest.ok
+            ? ("<div class='small'><strong>Latest:</strong> <a href='" + latestUrl + "' target='_blank' rel='noopener'>" + latestUrl + "</a></div>")
+            : ("<div class='small'><strong>Latest:</strong> failed to update (check token access).</div>");
 
           setStatus(
-            "<div class='ok'><div><strong>Published:</strong> <a href='" + publicUrl + "' target='_blank' rel='noopener'>" +
-              publicUrl + "</a></div>" +
-              "<div class='small'>If you opened immediately and got 404, wait a few seconds and refresh (Pages deploy).</div></div>",
+            "<div class='ok'>" +
+              "<div><strong>Published:</strong> <a href='" + publicUrl + "' target='_blank' rel='noopener'>" + publicUrl + "</a></div>" +
+              latestNote +
+              "<div class='small'>If you opened immediately and got 404, wait a few seconds and refresh (Pages deploy).</div>" +
+            "</div>",
             ""
           );
         } catch (e) {
@@ -168,13 +222,8 @@
         }
       }
 
-      function escapeHtml(s) {
-        return s.replace(/[&<>"']/g, function (c) {
-          return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
-        });
-      }
-
       el("publish").addEventListener("click", function () { publish(); });
+
       el("clear").addEventListener("click", function () {
         el("filename").value = "";
         el("html").value = "";
@@ -184,4 +233,3 @@
   </script>
 </body>
 </html>
-
