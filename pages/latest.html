@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GAM GPT Test – /23316173021/cat-horizontal-2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 16px;
+    }
+    #debug-panel {
+      margin-top: 24px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    #debug-panel h3 {
+      margin-top: 0;
+    }
+    #debug-panel code {
+      background: #eee;
+      padding: 2px 4px;
+    }
+  </style>
+
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+
+    var slot;
+    var mappingRules2 = [
+      { min: [728, 0], sizes: [[728, 90]] },
+      { min: [336, 0], sizes: [[336, 280], [300, 250]] },
+      { min: [300, 0], sizes: [[300, 250]] },
+      { min: [0, 0], sizes: [] }
+    ];
+
+    function getRequestedSizes() {
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+      for (var i = 0; i < mappingRules2.length; i++) {
+        var rule = mappingRules2[i];
+        if (vw >= rule.min[0] && vh >= rule.min[1]) {
+          return rule.sizes;
+        }
+      }
+      return [];
+    }
+
+    function renderDebug(extra) {
+      extra = extra || {};
+      var adUnitPath = slot ? slot.getAdUnitPath() : "";
+      var networkId = (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
+
+      document.getElementById("dbg-network").textContent = networkId || "N/A";
+      document.getElementById("dbg-adunit").textContent = adUnitPath || "N/A";
+      document.getElementById("dbg-pageurl").textContent = "https://faktor.bg";
+      document.getElementById("dbg-div").textContent = "div-gpt-ad-9137462053";
+      document.getElementById("dbg-defined").textContent = JSON.stringify([[300,250],[336,280],[728,90]]);
+      document.getElementById("dbg-requested").textContent = JSON.stringify(getRequestedSizes());
+      document.getElementById("dbg-viewport").textContent = window.innerWidth + " × " + window.innerHeight;
+
+      document.getElementById("dbg-campaign").innerHTML = extra.campaign || "N/A";
+      document.getElementById("dbg-lineitem").innerHTML = extra.lineItem || "N/A";
+      document.getElementById("dbg-creative").innerHTML = extra.creative || "N/A";
+    }
+
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderDebug, 200);
+    });
+
+    googletag.cmd.push(function () {
+      var mapping2 = googletag.sizeMapping()
+        .addSize([728, 0], [[728, 90]])
+        .addSize([336, 0], [[336, 280], [300, 250]])
+        .addSize([300, 0], [[300, 250]])
+        .addSize([0, 0], [])
+        .build();
+
+      slot = googletag.defineSlot(
+        "/23316173021/cat-horizontal-2",
+        [[300, 250], [336, 280], [728, 90]],
+        "div-gpt-ad-9137462053"
+      )
+      .defineSizeMapping(mapping2)
+      .addService(googletag.pubads());
+
+      googletag.pubads().set('page_url', 'https://faktor.bg');
+      googletag.pubads().enableSingleRequest();
+      googletag.pubads().collapseEmptyDivs();
+
+      googletag.pubads().addEventListener("slotRenderEnded", function (e) {
+        if (e.slot !== slot) return;
+
+        var adUnitPath = slot.getAdUnitPath();
+        var networkId = (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
+
+        function link(label, url) {
+          return url ? '<a target="_blank" rel="noopener" href="' + url + '">' + label + '</a>' : "N/A";
+        }
+
+        renderDebug({
+          campaign: e.campaignId
+            ? link(e.campaignId, "https://admanager.google.com/" + networkId + "#delivery/order/detail/" + e.campaignId)
+            : "N/A",
+          lineItem: e.lineItemId
+            ? link(e.lineItemId, "https://admanager.google.com/" + networkId + "#delivery/line_item/detail/" + e.lineItemId)
+            : "N/A",
+          creative: e.creativeId
+            ? link(e.creativeId, "https://admanager.google.com/" + networkId + "#delivery/creative/detail/" + e.creativeId)
+            : "N/A"
+        });
+      });
+
+      googletag.enableServices();
+    });
+  </script>
+</head>
+
+<body>
+  <h2>/23316173021/cat-horizontal-2</h2>
+
+  <div id="div-gpt-ad-9137462053" style="min-height:90px;"></div>
+  <script>
+    googletag.cmd.push(function () {
+      googletag.display("div-gpt-ad-9137462053");
+    });
+  </script>
+
+  <div id="debug-panel">
+    <h3>GPT Debug Panel</h3>
+    <div><strong>Network ID:</strong> <span id="dbg-network"></span></div>
+    <div><strong>Ad unit path:</strong> <span id="dbg-adunit"></span></div>
+    <div><strong>page_url:</strong> <span id="dbg-pageurl"></span></div>
+    <div><strong>Div ID:</strong> <span id="dbg-div"></span></div>
+    <div><strong>Defined sizes:</strong> <span id="dbg-defined"></span></div>
+    <div><strong>Requested sizes:</strong> <span id="dbg-requested"></span></div>
+    <div><strong>Viewport:</strong> <span id="dbg-viewport"></span></div>
+
+    <hr>
+
+    <div><strong>Campaign / Order ID:</strong> <span id="dbg-campaign"></span></div>
+    <div><strong>Line item ID:</strong> <span id="dbg-lineitem"></span></div>
+    <div><strong>Creative ID:</strong> <span id="dbg-creative"></span></div>
+
+    <hr>
+    <div>DevTools → Network / Console (filter: <code>gpt</code>, <code>doubleclick</code>)</div>
+  </div>
+
+  <script>
+    renderDebug();
+  </script>
+</body>
+</html>
