@@ -34,6 +34,14 @@
     <div class="row">
       <label for="token">GitHub token (classic recommended) with repo / contents write access</label>
       <input id="token" type="password" placeholder="ghp_... / github_pat_..." autocomplete="off" />
+      <div class="small" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px;">
+  <label style="display:flex; gap:8px; align-items:center; font-weight:500; margin:0;">
+    <input id="remember" type="checkbox" />
+    Remember token on this device
+  </label>
+  <button id="forget" type="button">Clear saved token</button>
+</div>
+
       <div class="small">
         Classic token: select scope <code>repo</code>.<br>
         Fine-grained token: allow this repo + Permissions: Contents = Read and write.
@@ -69,6 +77,19 @@
       var REPO = "gpt-test-pages";
       var BRANCH = "main";
       var PAGES_DIR = "pages";
+      var TOKEN_KEY = "gpt_pages_publisher_token_v1";
+
+function loadSavedToken() {
+  try { return localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; }
+}
+
+function saveToken(tok) {
+  try { localStorage.setItem(TOKEN_KEY, tok); } catch (e) {}
+}
+
+function forgetToken() {
+  try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+}
 
       function el(id) { return document.getElementById(id); }
 
@@ -221,6 +242,32 @@
           setStatus("<div><strong>Error:</strong> <code>" + escapeHtml(String(e)) + "</code></div>", "err");
         }
       }
+// Init token from localStorage
+var saved = loadSavedToken();
+if (saved) {
+  el("token").value = saved;
+  el("remember").checked = true;
+}
+
+el("remember").addEventListener("change", function () {
+  var tok = el("token").value.trim();
+  if (el("remember").checked && tok) saveToken(tok);
+  if (!el("remember").checked) forgetToken();
+});
+
+el("token").addEventListener("input", function () {
+  if (el("remember").checked) {
+    var tok = el("token").value.trim();
+    if (tok) saveToken(tok);
+  }
+});
+
+el("forget").addEventListener("click", function () {
+  forgetToken();
+  el("token").value = "";
+  el("remember").checked = false;
+  setStatus("Saved token cleared.", "note");
+});
 
       el("publish").addEventListener("click", function () { publish(); });
 
