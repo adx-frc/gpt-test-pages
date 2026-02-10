@@ -4,8 +4,184 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GPT Test Page Publisher</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; line-height: 1.4; }
+    .wrap { max-width: 1100px; margin: 0 auto; }
+    textarea, input { width: 100%; box-sizing: border-box; font: inherit; }
+    textarea { min-height: 320px; padding: 12px; }
+    input { padding: 10px 12px; }
+    .row { margin: 14px 0; }
+    .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    button { padding: 10px 14px; font: inherit; cursor: pointer; }
+    .note { padding: 12px 14px; background: #f6f7f8; border: 1px solid #e5e7eb; border-radius: 10px; }
+    .ok { padding: 12px 14px; background: #ecfdf5; border: 1px solid #10b981; border-radius: 10px; }
+    .err { padding: 12px 14px; background: #fef2f2; border: 1px solid #ef4444; border-radius: 10px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    .small { font-size: 13px; color: #475569; }
+    a { word-break: break-all; }
+  </style>
 </head>
 <body>
-  It works.
+  <div class="wrap">
+    <h1>GPT Test Page Publisher</h1>
+
+    <div class="note">
+      <div><strong>Publishes</strong> a new file into <code>pages/</code> in this repo and returns a public GitHub Pages URL.</div>
+      <div class="small">
+        Token is used only in your browser to call GitHub API. Nothing is stored.
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="token">GitHub token (classic or fine-grained) with Contents: Write for this repo</label>
+      <input id="token" type="password" placeholder="ghp_... / github_pat_..." autocomplete="off" />
+      <div class="small">Tip: fine-grained token → Repository access: only this repo → Permissions: Contents = Read and write.</div>
+    </div>
+
+    <div class="row">
+      <label for="filename">Filename (optional)</label>
+      <input id="filename" type="text" placeholder="leave empty for auto-generated name" />
+      <div class="small">If empty, will create something like <code>2026-02-10_1047_ab12cd.html</code>.</div>
+    </div>
+
+    <div class="row">
+      <label for="html">Paste full HTML here</label>
+      <textarea id="html" placeholder="<!doctype html> ..."></textarea>
+    </div>
+
+    <div class="row btns">
+      <button id="publish">Publish</button>
+      <button id="clear">Clear</button>
+    </div>
+
+    <div id="status" class="row"></div>
+  </div>
+
+  <script>
+    (function () {
+      // Repo config (hardcoded to current repo)
+      var OWNER = "adx-frc";
+      var REPO = "gpt-test-pages";
+      var BRANCH = "main";
+      var PAGES_DIR = "pages";
+
+      function el(id) { return document.getElementById(id); }
+
+      function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+      function makeAutoName() {
+        var d = new Date();
+        var yyyy = d.getFullYear();
+        var mm = pad2(d.getMonth() + 1);
+        var dd = pad2(d.getDate());
+        var hh = pad2(d.getHours());
+        var mi = pad2(d.getMinutes());
+        var rand = Math.random().toString(16).slice(2, 8);
+        return yyyy + "-" + mm + "-" + dd + "_" + hh + mi + "_" + rand + ".html";
+      }
+
+      function base64EncodeUnicode(str) {
+        // Proper UTF-8 → base64
+        var utf8 = new TextEncoder().encode(str);
+        var bin = "";
+        for (var i = 0; i < utf8.length; i++) bin += String.fromCharCode(utf8[i]);
+        return btoa(bin);
+      }
+
+      function setStatus(html, cls) {
+        var s = el("status");
+        s.className = cls ? cls : "";
+        s.innerHTML = html || "";
+      }
+
+      function normalizeFilename(name) {
+        var n = (name || "").trim();
+        if (!n) return "";
+        n = n.replace(/^\/+/, "");
+        if (!n.toLowerCase().endsWith(".html")) n += ".html";
+        n = n.replace(/[^a-zA-Z0-9._-]/g, "_");
+        return n;
+      }
+
+      async function publish() {
+        setStatus("Publishing…", "note");
+
+        var token = el("token").value.trim();
+        if (!token) {
+          setStatus("Missing token.", "err");
+          return;
+        }
+
+        var html = el("html").value;
+        if (!html || html.trim().length < 20) {
+          setStatus("HTML looks empty. Paste the full HTML page.", "err");
+          return;
+        }
+
+        var userName = normalizeFilename(el("filename").value);
+        var fileName = userName || makeAutoName();
+        var path = PAGES_DIR + "/" + fileName;
+
+        var apiUrl = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/" + encodeURIComponent(path);
+        // GitHub expects path segments, so fix encoding of '/'
+        apiUrl = apiUrl.replace(/%2F/g, "/");
+
+        var body = {
+          message: "Publish test page: " + fileName,
+          content: base64EncodeUnicode(html),
+          branch: BRANCH
+        };
+
+        try {
+          var res = await fetch(apiUrl, {
+            method: "PUT",
+            headers: {
+              "Authorization": "token " + token,
+              "Accept": "application/vnd.github+json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+          });
+
+          var data = await res.json().catch(function(){ return null; });
+
+          if (!res.ok) {
+            var msg = (data && data.message) ? data.message : ("HTTP " + res.status);
+            setStatus(
+              "<div><strong>Publish failed.</strong></div><div class='small'><code>" + escapeHtml(msg) + "</code></div>",
+              "err"
+            );
+            return;
+          }
+
+          var publicUrl = "https://" + OWNER + ".github.io/" + REPO + "/" + path;
+
+          setStatus(
+            "<div class='ok'><div><strong>Published:</strong> <a href='" + publicUrl + "' target='_blank' rel='noopener'>" +
+              publicUrl + "</a></div>" +
+              "<div class='small'>If you opened immediately and got 404, wait a few seconds and refresh (Pages deploy).</div></div>",
+            ""
+          );
+        } catch (e) {
+          setStatus("<div><strong>Error:</strong> <code>" + escapeHtml(String(e)) + "</code></div>", "err");
+        }
+      }
+
+      function escapeHtml(s) {
+        return s.replace(/[&<>"']/g, function (c) {
+          return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+        });
+      }
+
+      el("publish").addEventListener("click", function () { publish(); });
+      el("clear").addEventListener("click", function () {
+        el("filename").value = "";
+        el("html").value = "";
+        setStatus("", "");
+      });
+    })();
+  </script>
 </body>
 </html>
+
