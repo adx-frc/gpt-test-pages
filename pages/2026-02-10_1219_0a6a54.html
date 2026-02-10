@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GAM GPT Test Page — faktor.bg</title>
+
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script>
+      // --- GPT bootstrap ---
+      window.googletag = window.googletag || { cmd: [] };
+
+      // --- Required: page_url ---
+      var PAGE_URL = "https://faktor.bg";
+
+      // --- Size mapping rule mirrors (for Requested sizes logic + panel) ---
+      var mappingRules2 = [
+        { min: [728, 0], sizes: [[728, 90]] },
+        { min: [336, 0], sizes: [[336, 280], [300, 250]] },
+        { min: [300, 0], sizes: [[300, 250]] },
+        { min: [0, 0], sizes: [] }, // disable <300
+      ];
+
+      var mappingRules3 = [
+        { min: [970, 0], sizes: [[970, 250], [728, 90]] },
+        { min: [728, 0], sizes: [[728, 90]] },
+        { min: [336, 0], sizes: [[336, 280], [300, 250], [300, 100], [300, 50]] },
+        { min: [300, 0], sizes: [[300, 250], [300, 100], [300, 50]] },
+        { min: [0, 0], sizes: [] }, // disable <300
+      ];
+
+      // --- Slot registry for debug panel ---
+      var slots = {}; // key: divId -> meta
+
+      function normalizeSizes(sizes) {
+        if (!sizes) return [];
+        // sizes can be string 'fluid', array, or array of arrays
+        if (sizes === "fluid") return ["fluid"];
+        if (Array.isArray(sizes) && sizes.length === 2 && typeof sizes[0] === "number") return [sizes];
+        return sizes;
+      }
+
+      function formatSizes(sizes) {
+        sizes = normalizeSizes(sizes);
+        if (!sizes || !sizes.length) return "None";
+        return sizes
+          .map(function (s) {
+            if (s === "fluid") return "fluid";
+            return s[0] + "x" + s[1];
+          })
+          .join(", ");
+      }
+
+      function getViewport() {
+        return { w: Math.max(document.documentElement.clientWidth, window.innerWidth || 0), h: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) };
+      }
+
+      function computeRequestedSizes(mappingRules, vw, vh, definedSizes) {
+        if (!mappingRules) return normalizeSizes(definedSizes);
+        for (var i = 0; i < mappingRules.length; i++) {
+          var r = mappingRules[i];
+          if (vw >= r.min[0] && vh >= r.min[1]) {
+            return normalizeSizes(r.sizes);
+          }
+        }
+        return normalizeSizes(definedSizes);
+      }
+
+      function debounce(fn, wait) {
+        var t;
+        return function () {
+          var args = arguments;
+          clearTimeout(t);
+          t = setTimeout(function () {
+            fn.apply(null, args);
+          }, wait);
+        };
+      }
+
+      function setText(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text;
+      }
+
+      function setHTML(id, html) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+      }
+
+      function gamLink(networkId, type, id) {
+        if (!networkId || !id) return "N/A";
+        var href = "";
+        if (type === "lineItem") href = "https://admanager.google.com/" + networkId + "#delivery/line_item/detail/" + id;
+        if (type === "creative") href = "https://admanager.google.com/" + networkId + "#delivery/creative/detail/" + id;
+        if (type === "order") href = "https://admanager.google.com/" + networkId + "#delivery/order/detail/" + id;
+        if (!href) return "N/A";
+        return '<a target="_blank" rel="noopener" href="' + href + '">' + id + "</a>";
+      }
+
+      function updatePanel() {
+        setText("dbg-page-url", PAGE_URL);
+
+        var vp = getViewport();
+        setText("dbg-viewport", vp.w + "×" + vp.h);
+
+        // Per-slot blocks
+        var html = "";
+        Object.keys(slots).forEach(function (divId) {
+          var meta = slots[divId];
+          var requested = computeRequestedSizes(meta.mappingRules, vp.w, vp.h, meta.definedSizes);
+
+          meta.requestedSizes = requested;
+
+          var networkId = meta.networkId || "";
+          var lineItemId = meta.lineItemId || "";
+          var creativeId = meta.creativeId || "";
+          var campaignId = meta.campaignId || "";
+
+          html += '<div class="slotBlock">';
+          html += '<div class="slotTitle">' + meta.label + "</div>";
+
+          html += '<div class="row"><span class="k">Network ID</span><span class="v">' + (networkId || "N/A") + "</span></div>";
+          html += '<div class="row"><span class="k">Ad unit path</span><span class="v mono">' + (meta.adUnitPath || "N/A") + "</span></div>";
+          html += '<div class="row"><span class="k">Div ID</span><span class="v mono">' + divId + "</span></div>";
+          html += '<div class="row"><span class="k">Defined sizes</span><span class="v mono">' + formatSizes(meta.definedSizes) + "</span></div>";
+          html += '<div class="row"><span class="k">Requested sizes</span><span class="v mono">' + formatSizes(requested) + "</span></div>";
+          html += '<div class="row"><span class="k">Rendered size</span><span class="v mono">' + (meta.renderedSize ? formatSizes(meta.renderedSize) : "—") + "</span></div>";
+          html += '<div class="row"><span class="k">isEmpty</span><span class="v">' + (meta.isEmpty === true ? "true" : meta.isEmpty === false ? "false" : "—") + "</span></div>";
+
+          html += '<div class="row"><span class="k">Campaign/Order ID</span><span class="v">' + (campaignId ? gamLink(networkId, "order", campaignId) : "N/A") + "</span></div>";
+          html += '<div class="row"><span class="k">Line item ID</span><span class="v">' + (lineItemId ? gamLink(networkId, "lineItem", lineItemId) : "N/A") + "</span></div>";
+          html += '<div class="row"><span class="k">Creative ID</span><span class="v">' + (creativeId ? gamLink(networkId, "creative", creativeId) : "N/A") + "</span></div>";
+
+          if (meta.advertiserId) {
+            html += '<div class="row"><span class="k">Advertiser ID</span><span class="v">' + meta.advertiserId + "</span></div>";
+          }
+
+          html += "</div>";
+        });
+
+        setHTML("dbg-slots", html || "<div class='muted'>No slots registered yet.</div>");
+      }
+
+      var updatePanelDebounced = debounce(updatePanel, 150);
+
+      // --- Download link (exports current HTML to a file) ---
+      function downloadThisPage() {
+        try {
+          var html = "<!doctype html>\n" + document.documentElement.outerHTML;
+          var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "gpt-test-faktor-bg.html";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(function () {
+            URL.revokeObjectURL(url);
+          }, 1500);
+        } catch (e) {
+          alert("Download failed: " + e);
+        }
+      }
+
+      // --- GPT setup: define all slots once, reuse mappings, enable services once ---
+      googletag.cmd.push(function () {
+        // Build actual GPT mappings (must match the mirrored rules above)
+        var mapping2 = googletag
+          .sizeMapping()
+          .addSize([728, 0], [[728, 90]])
+          .addSize([336, 0], [[336, 280], [300, 250]])
+          .addSize([300, 0], [[300, 250]])
+          .addSize([0, 0], [])
+          .build();
+
+        var mapping3 = googletag
+          .sizeMapping()
+          .addSize([970, 0], [[970, 250], [728, 90]])
+          .addSize([728, 0], [[728, 90]])
+          .addSize([336, 0], [[336, 280], [300, 250], [300, 100], [300, 50]])
+          .addSize([300, 0], [[300, 250], [300, 100], [300, 50]])
+          .addSize([0, 0], [])
+          .build();
+
+        // Required
+        googletag.pubads().set("page_url", PAGE_URL);
+
+        // Optional (requested by your tag)
+        googletag.pubads().enableSingleRequest();
+        googletag.pubads().collapseEmptyDivs();
+
+        // Define slots
+        function regSlot(label, adUnitPath, definedSizes, divId, mappingObj, mappingRules) {
+          var slot = googletag.defineSlot(adUnitPath, definedSizes, divId).addService(googletag.pubads());
+          if (mappingObj) slot.defineSizeMapping(mappingObj);
+
+          // Extract (mandatory) from slot object
+          var path = slot.getAdUnitPath();
+          var networkId = ((path || "").match(/^\/(\d+)\//) || [])[1] || "";
+
+          slots[divId] = {
+            label: label,
+            slot: slot,
+            divId: divId,
+            adUnitPath: path,
+            networkId: networkId,
+            definedSizes: definedSizes,
+            mappingRules: mappingRules || null,
+            requestedSizes: null,
+            renderedSize: null,
+            isEmpty: null,
+            campaignId: "",
+            lineItemId: "",
+            creativeId: "",
+            advertiserId: "",
+          };
+
+          return slot;
+        }
+
+        regSlot("article-horizontal-2", "/23316173021/article-horizontal-2", [[300, 250], [336, 280], [728, 90]], "div-gpt-ad-4810265931", mapping2, mappingRules2);
+
+        regSlot("cat-horizontal-1", "/23316173021/cat-horizontal-1", [[300, 250], [336, 280], [728, 90]], "div-gpt-ad-7391502846", mapping2, mappingRules2);
+
+        regSlot("cat-horizontal-2", "/23316173021/cat-horizontal-2", [[300, 250], [336, 280], [728, 90]], "div-gpt-ad-6208471953", mapping2, mappingRules2);
+
+        regSlot("home-page-horizontal", "/23316173021/home-page-horizontal", [[300, 250], [336, 280], [728, 90]], "div-gpt-ad-9513726084", mapping2, mappingRules2);
+
+        regSlot(
+          "mobile-tags-search-serveys",
+          "/23316173021/mobile-tags-search-serveys",
+          [[300, 50], [300, 100], [300, 250], [336, 280], [728, 90], [970, 250]],
+          "div-gpt-ad-3085719462",
+          mapping3,
+          mappingRules3
+        );
+
+        // Render response IDs from GPT event payload
+        googletag.pubads().addEventListener("slotRenderEnded", function (e) {
+          try {
+            var divId = e.slot && e.slot.getSlotElementId ? e.slot.getSlotElementId() : "";
+            var meta = slots[divId];
+            if (!meta) return;
+
+            meta.isEmpty = !!e.isEmpty;
+            meta.renderedSize = e.size ? [e.size] : null;
+
+            // Mandatory (best-effort per GPT payload)
+            meta.lineItemId = e.lineItemId || "";
+            meta.creativeId = e.creativeId || "";
+            meta.advertiserId = e.advertiserId || "";
+            meta.campaignId = e.campaignId || "";
+
+            updatePanelDebounced();
+          } catch (err) {
+            // no-op
+          }
+        });
+
+        googletag.enableServices();
+
+        // Initial panel paint after definitions
+        updatePanel();
+      });
+
+      // Panel updates on resize (requested sizes)
+      window.addEventListener("resize", updatePanelDebounced);
+      window.addEventListener("load", function () {
+        updatePanel();
+      });
+    </script>
+
+    <style>
+      :root {
+        --bg: #0b1220;
+        --panel: rgba(17, 24, 39, 0.92);
+        --panel2: rgba(31, 41, 55, 0.85);
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --accent: #60a5fa;
+        --border: rgba(255, 255, 255, 0.12);
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(180deg, #0a0f1c, #0b1220);
+        color: var(--text);
+        padding-right: 380px; /* room for panel */
+      }
+      header {
+        padding: 18px 18px 8px;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      header .sub {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 12px 18px 28px;
+      }
+      .slotWrap {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      }
+      .slotLabel {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .slotLabel .name {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .slotLabel .path {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .adBox {
+        display: grid;
+        place-items: center;
+        min-height: 110px;
+        background: rgba(0, 0, 0, 0.22);
+        border: 1px dashed rgba(255, 255, 255, 0.18);
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      /* Debug panel */
+      #debugPanel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 360px;
+        height: 100vh;
+        overflow: auto;
+        background: var(--panel);
+        border-left: 1px solid var(--border);
+        padding: 14px 14px 18px;
+        box-sizing: border-box;
+        z-index: 9999;
+        backdrop-filter: blur(10px);
+      }
+      #debugPanel h2 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+      .panelTop {
+        background: var(--panel2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 12px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 10px;
+        padding: 4px 0;
+        align-items: baseline;
+      }
+      .k {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .v {
+        font-size: 12px;
+      }
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        word-break: break-all;
+      }
+      .slotBlock {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      .slotTitle {
+        font-weight: 800;
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .btnRow {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .btn {
+        appearance: none;
+        border: 1px solid var(--border);
+        background: rgba(96, 165, 250, 0.14);
+        color: var(--text);
+        border-radius: 10px;
+        padding: 8px 10px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 12px;
+      }
+      .btn:hover {
+        background: rgba(96, 165, 250, 0.22);
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      @media (max-width: 900px) {
+        body {
+          padding-right: 0;
+        }
+        #debugPanel {
+          position: static;
+          width: auto;
+          height: auto;
+          border-left: none;
+          border-top: 1px solid var(--border);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>GAM GPT Single Test Page</h1>
+      <div class="sub">
+        page_url set to <span class="mono">https://faktor.bg</span> • DevTools → Network/Console (filter <span class="mono">gpt</span>/<span class="mono">doubleclick</span>)
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- article-horizontal-2 -->
+      <section class="slotWrap">
+        <div class="slotLabel">
+          <div class="name">article-horizontal-2</div>
+          <div class="path mono">/23316173021/article-horizontal-2</div>
+        </div>
+        <div class="adBox">
+          <div id="div-gpt-ad-4810265931"></div>
+          <script>
+            googletag.cmd.push(function () {
+              googletag.display("div-gpt-ad-4810265931");
+            });
+          </script>
+        </div>
+      </section>
+
+      <!-- cat-horizontal-1 -->
+      <section class="slotWrap">
+        <div class="slotLabel">
+          <div class="name">cat-horizontal-1</div>
+          <div class="path mono">/23316173021/cat-horizontal-1</div>
+        </div>
+        <div class="adBox">
+          <div id="div-gpt-ad-7391502846"></div>
+          <script>
+            googletag.cmd.push(function () {
+              googletag.display("div-gpt-ad-7391502846");
+            });
+          </script>
+        </div>
+      </section>
+
+      <!-- cat-horizontal-2 -->
+      <section class="slotWrap">
+        <div class="slotLabel">
+          <div class="name">cat-horizontal-2</div>
+          <div class="path mono">/23316173021/cat-horizontal-2</div>
+        </div>
+        <div class="adBox">
+          <div id="div-gpt-ad-6208471953"></div>
+          <script>
+            googletag.cmd.push(function () {
+              googletag.display("div-gpt-ad-6208471953");
+            });
+          </script>
+        </div>
+      </section>
+
+      <!-- home-page-horizontal -->
+      <section class="slotWrap">
+        <div class="slotLabel">
+          <div class="name">home-page-horizontal</div>
+          <div class="path mono">/23316173021/home-page-horizontal</div>
+        </div>
+        <div class="adBox">
+          <div id="div-gpt-ad-9513726084"></div>
+          <script>
+            googletag.cmd.push(function () {
+              googletag.display("div-gpt-ad-9513726084");
+            });
+          </script>
+        </div>
+      </section>
+
+      <!-- mobile-tags-search-serveys -->
+      <section class="slotWrap">
+        <div class="slotLabel">
+          <div class="name">mobile-tags-search-serveys</div>
+          <div class="path mono">/23316173021/mobile-tags-search-serveys</div>
+        </div>
+        <div class="adBox">
+          <div id="div-gpt-ad-3085719462"></div>
+          <script>
+            googletag.cmd.push(function () {
+              googletag.display("div-gpt-ad-3085719462");
+            });
+          </script>
+        </div>
+      </section>
+    </main>
+
+    <!-- Debug Panel (must include) -->
+    <aside id="debugPanel">
+      <h2>Debug Panel</h2>
+
+      <div class="panelTop">
+        <div class="row">
+          <span class="k">page_url</span>
+          <span class="v mono" id="dbg-page-url">—</span>
+        </div>
+        <div class="row">
+          <span class="k">Viewport</span>
+          <span class="v mono" id="dbg-viewport">—</span>
+        </div>
+        <div class="row">
+          <span class="k">Tips</span>
+          <span class="v">DevTools → Network/Console (filter <span class="mono">gpt</span>/<span class="mono">doubleclick</span>)</span>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn" onclick="downloadThisPage()">Download this page</button>
+          <button class="btn" onclick="updatePanel()">Refresh panel</button>
+        </div>
+      </div>
+
+      <div id="dbg-slots"></div>
+
+      <div style="margin-top: 12px" class="muted">
+        Notes: Network ID + Ad unit path are extracted from <span class="mono">slot.getAdUnitPath()</span>. Line item / creative / campaign IDs come from the
+        <span class="mono">slotRenderEnded</span> event payload (shown as N/A if missing).
+      </div>
+    </aside>
+  </body>
+</html>
