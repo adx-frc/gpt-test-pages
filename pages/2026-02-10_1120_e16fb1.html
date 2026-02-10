@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GPT Test – /23316173021/article-horizontal-2</title>
+
+  <!-- Required viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- GPT library -->
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+
+    // Safe UI updater (protects against early GPT events)
+    (function () {
+      function setTextWhenReady(id, text) {
+        var el = document.getElementById(id);
+        if (el) { el.textContent = text; return; }
+
+        var tries = 0;
+        var timer = setInterval(function () {
+          tries++;
+          el = document.getElementById(id);
+          if (el) {
+            el.textContent = text;
+            clearInterval(timer);
+          } else if (tries >= 60) {
+            clearInterval(timer);
+          }
+        }, 50);
+      }
+
+      window.__gptTestSet = function (id, text) {
+        setTextWhenReady(id, text);
+      };
+    })();
+
+    googletag.cmd.push(function () {
+      // mapping2 (Model A): Mobile 300–727, Desktop >=728
+      // Global safety: viewport < 300px => NO AD
+      var mapping2 = googletag.sizeMapping()
+        .addSize([728, 0], [[728, 90]])                 // Desktop
+        .addSize([336, 0], [[336, 280], [300, 250]])    // Mobile (>=336)
+        .addSize([300, 0], [[300, 250]])                // Mobile (300–335)
+        .addSize([0, 0], [])                            // Safety: disable
+        .build();
+
+      googletag.defineSlot(
+          "/23316173021/article-horizontal-2",
+          [[300, 250], [336, 280], [728, 90]],
+          "div-gpt-ad-9137462051"
+        )
+        .defineSizeMapping(mapping2)
+        .addService(googletag.pubads());
+
+      // Mandatory page_url
+      googletag.pubads().set('page_url', 'https://faktor.bg');
+
+      // Included by user
+      googletag.pubads().enableSingleRequest();
+      googletag.pubads().collapseEmptyDivs();
+
+      // Init diagnostics defaults
+      window.__gptTestSet("network-code", "23316173021");
+      window.__gptTestSet("adunit-path", "/23316173021/article-horizontal-2");
+      window.__gptTestSet("div-id", "div-gpt-ad-9137462051");
+      window.__gptTestSet("all-sizes", "728×90, 336×280, 300×250");
+      window.__gptTestSet("page-url", "https://faktor.bg");
+
+      window.__gptTestSet("creative-size", "Waiting for request…");
+      window.__gptTestSet("line-item-id", "—");
+      window.__gptTestSet("campaign-id", "—");
+      window.__gptTestSet("creative-id", "—");
+      window.__gptTestSet("advertiser-id", "—");
+
+      function isOurSlot(event) {
+        return event && event.slot && event.slot.getSlotElementId &&
+          event.slot.getSlotElementId() === "div-gpt-ad-9137462051";
+      }
+
+      googletag.pubads().addEventListener("slotRequested", function (event) {
+        if (!isOurSlot(event)) return;
+        console.log("[GPT] slotRequested", event);
+        window.__gptTestSet("creative-size", "Request sent…");
+      });
+
+      googletag.pubads().addEventListener("slotRenderEnded", function (event) {
+        if (!isOurSlot(event)) return;
+        console.log("[GPT] slotRenderEnded", event);
+
+        // Creative size / empty
+        if (event.isEmpty) {
+          window.__gptTestSet("creative-size", "Empty / no fill");
+        } else if (Array.isArray(event.size)) {
+          window.__gptTestSet("creative-size", event.size[0] + "×" + event.size[1]);
+        } else if (event.size) {
+          window.__gptTestSet("creative-size", String(event.size));
+        } else {
+          window.__gptTestSet("creative-size", "Rendered (size unknown)");
+        }
+
+        // GAM metadata (when available)
+        window.__gptTestSet("line-item-id", (event.lineItemId != null ? String(event.lineItemId) : "—"));
+        window.__gptTestSet("campaign-id", (event.campaignId != null ? String(event.campaignId) : "—"));
+        window.__gptTestSet("creative-id", (event.creativeId != null ? String(event.creativeId) : "—"));
+        window.__gptTestSet("advertiser-id", (event.advertiserId != null ? String(event.advertiserId) : "—"));
+      });
+
+      googletag.pubads().addEventListener("slotOnload", function (event) {
+        if (!isOurSlot(event)) return;
+        console.log("[GPT] slotOnload", event);
+      });
+
+      googletag.enableServices();
+    });
+  </script>
+
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f6f7; margin: 0; padding: 20px; }
+    .info-box {
+      max-width: 980px; background: #fff; border: 1px solid #ddd; border-radius: 6px;
+      padding: 12px 16px; margin: 0 auto 16px auto; font-size: 14px; line-height: 1.4;
+    }
+    .info-box strong { display: inline-block; min-width: 190px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .note { margin-top: 8px; font-size: 12px; color: #666; }
+    .ad-wrapper {
+      max-width: 980px; margin: 0 auto;
+      padding: 16px 0; text-align: center;
+      background: #fff; border: 1px dashed #ccc; border-radius: 6px;
+    }
+    hr { border: 0; border-top: 1px solid #eee; margin: 10px 0; }
+  </style>
+</head>
+
+<body>
+  <div class="info-box">
+    <div><strong>Network code:</strong> <span class="mono" id="network-code">—</span></div>
+    <div><strong>Ad unit path:</strong> <span class="mono" id="adunit-path">—</span></div>
+    <div><strong>Div ID:</strong> <span class="mono" id="div-id">—</span></div>
+    <div><strong>All sizes:</strong> <span class="mono" id="all-sizes">—</span></div>
+    <div><strong>Mapping behavior:</strong> Model A; Desktop ≥728 → 728×90; Mobile 336–727 → 336×280 or 300×250; Mobile 300–335 → 300×250</div>
+    <div><strong>page_url:</strong> <span class="mono" id="page-url">—</span></div>
+
+    <div><strong>Viewport width:</strong> <span class="mono"><span id="viewport-width">-</span> px</span></div>
+    <div><strong>Document width:</strong> <span class="mono"><span id="document-width">-</span> px</span></div>
+
+    <div><strong>Actual creative size:</strong> <span class="mono" id="creative-size">Waiting…</span></div>
+
+    <hr>
+
+    <div><strong>Line item ID:</strong> <span class="mono" id="line-item-id">—</span></div>
+    <div><strong>Campaign ID:</strong> <span class="mono" id="campaign-id">—</span></div>
+    <div><strong>Creative ID:</strong> <span class="mono" id="creative-id">—</span></div>
+    <div><strong>Advertiser ID:</strong> <span class="mono" id="advertiser-id">—</span></div>
+
+    <div class="note">
+      This slot is expected to be empty below 300px viewport width by design.<br>
+      Hint: Open DevTools → Network/Console to inspect GPT and ad requests.
+    </div>
+  </div>
+
+  <div class="ad-wrapper">
+    <div id="div-gpt-ad-9137462051"></div>
+    <script>
+      googletag.cmd.push(function () {
+        googletag.display("div-gpt-ad-9137462051");
+      });
+    </script>
+  </div>
+
+  <script>
+    (function () {
+      var vwEl = document.getElementById("viewport-width");
+      var dwEl = document.getElementById("document-width");
+
+      function updateWidths() {
+        var vw = Math.round(window.innerWidth || document.documentElement.clientWidth || 0);
+
+        var d = document.documentElement;
+        var b = document.body;
+        var dw = Math.round(Math.max(
+          d.scrollWidth, d.offsetWidth, d.clientWidth,
+          b ? b.scrollWidth : 0, b ? b.offsetWidth : 0, b ? b.clientWidth : 0
+        ));
+
+        vwEl.textContent = String(vw);
+        dwEl.textContent = String(dw);
+      }
+
+      updateWidths();
+      window.addEventListener("resize", updateWidths, { passive: true });
+      window.addEventListener("orientationchange", updateWidths, { passive: true });
+    })();
+  </script>
+</body>
+</html>
+```0
