@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GAM GPT Test Page – studinfo.org</title>
+
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 16px; background:#f7f7fb; color:#111; }
+    .wrap { max-width: 1100px; margin: 0 auto; }
+    .row { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 980px){ .row { grid-template-columns: 360px 1fr; align-items: start; } }
+
+    .panel {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      padding: 14px 14px 10px;
+      position: sticky; top: 12px;
+    }
+    .panel h2 { margin: 0 0 10px; font-size: 16px; }
+    .kv { font-size: 13px; line-height: 1.35; }
+    .kv .k { color:#6b7280; display:block; margin-top: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+    .kv .v { word-break: break-word; }
+    .pill { display:inline-block; padding:2px 8px; border-radius: 999px; background:#eef2ff; color:#3730a3; font-size:12px; }
+    .hint { margin-top: 10px; font-size: 12px; color:#6b7280; }
+    .hint code { background:#f3f4f6; padding:1px 6px; border-radius: 8px; }
+
+    .stage {
+      background:#fff; border: 1px solid #e5e7eb; border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      padding: 14px;
+      min-height: 300px;
+    }
+    .stage h1 { margin: 0 0 10px; font-size: 18px; }
+    .adbox {
+      border: 1px dashed #9ca3af; border-radius: 12px; padding: 10px;
+      background: linear-gradient(180deg, #fafafa, #fff);
+    }
+    .adlabel { font-size: 12px; color:#6b7280; margin-bottom: 8px; }
+  </style>
+
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+  <script>
+    // ----- User-provided inputs (from your tag) -----
+    const PAGE_URL = "https://studinfo.org/";
+    const DIV_ID = "div-gpt-ad-0634300577-99";
+    const AD_UNIT_PATH = "/22908122590,23338908957/studinfo/d-slot_1";
+    const DEFINED_SIZES = [[970, 250], [728, 90], [970, 90]];
+
+    window.googletag = window.googletag || { cmd: [] };
+
+    let slot = null;
+
+    // ----- Debug panel helpers -----
+    function $(id){ return document.getElementById(id); }
+
+    function fmtSizes(sizes) {
+      if (!sizes || !sizes.length) return "None";
+      return sizes.map(s => Array.isArray(s) ? s.join("x") : String(s)).join(", ");
+    }
+
+    function getViewport() {
+      return { w: Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0),
+               h: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) };
+    }
+
+    function computeRequestedSizesNoMapping() {
+      // Rule: if no sizeMapping exists, requested sizes = defined sizes
+      return DEFINED_SIZES.slice();
+    }
+
+    let resizeTimer = null;
+    function debounceUpdateRequestedSizes() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updatePanel, 120);
+    }
+
+    function safeText(el, val) {
+      if (!el) return;
+      el.textContent = (val === undefined || val === null || val === "") ? "N/A" : String(val);
+    }
+
+    function safeHTML(el, html) {
+      if (!el) return;
+      el.innerHTML = html;
+    }
+
+    function makeGAMLink(networkId, type, id) {
+      if (!networkId || !id) return "N/A";
+      const base = `https://admanager.google.com/${encodeURIComponent(networkId)}`;
+      const map = {
+        line_item: `#delivery/line_item/detail/${encodeURIComponent(id)}`,
+        creative: `#delivery/creative/detail/${encodeURIComponent(id)}`,
+        order: `#delivery/order/detail/${encodeURIComponent(id)}`
+      };
+      const href = base + (map[type] || "");
+      const label = (type === "line_item") ? `Line item ${id}` :
+                    (type === "creative") ? `Creative ${id}` :
+                    `Campaign/Order ${id}`;
+      return `<a href="${href}" target="_blank" rel="noopener">${label}</a>`;
+    }
+
+    function updatePanel(extra) {
+      const vp = getViewport();
+      safeText($("dbg_page_url"), PAGE_URL);
+      safeText($("dbg_div_id"), DIV_ID);
+      safeText($("dbg_viewport"), `${vp.w} x ${vp.h}`);
+
+      // Network + ad unit extracted at runtime from slot
+      let adUnitPath = "";
+      let networkId = "";
+
+      if (slot && typeof slot.getAdUnitPath === "function") {
+        adUnitPath = slot.getAdUnitPath() || "";
+        const m = adUnitPath.match(/^\/(\d+)\//);
+        networkId = (m && m[1]) ? m[1] : "";
+      }
+
+      safeText($("dbg_network_id"), networkId || "");
+      safeText($("dbg_ad_unit_path"), adUnitPath || "");
+
+      safeText($("dbg_defined_sizes"), fmtSizes(DEFINED_SIZES));
+
+      const requestedSizes = computeRequestedSizesNoMapping();
+      safeText($("dbg_requested_sizes"), fmtSizes(requestedSizes));
+
+      // IDs from slotRenderEnded (if available yet)
+      const data = extra || {};
+      safeText($("dbg_is_empty"), (data.isEmpty === true) ? "true" : (data.isEmpty === false) ? "false" : "");
+      safeText($("dbg_rendered_size"), data.size ? (Array.isArray(data.size) ? data.size.join("x") : String(data.size)) : "");
+
+      const campaignId = data.campaignId || "";
+      const lineItemId = data.lineItemId || "";
+      const creativeId = data.creativeId || "";
+
+      safeText($("dbg_campaign_id"), campaignId);
+      safeText($("dbg_line_item_id"), lineItemId);
+      safeText($("dbg_creative_id"), creativeId);
+
+      safeHTML($("dbg_campaign_link"), makeGAMLink(networkId, "order", campaignId));
+      safeHTML($("dbg_line_item_link"), makeGAMLink(networkId, "line_item", lineItemId));
+      safeHTML($("dbg_creative_link"), makeGAMLink(networkId, "creative", creativeId));
+    }
+
+    // ----- GPT setup -----
+    googletag.cmd.push(function() {
+      slot = googletag
+        .defineSlot(AD_UNIT_PATH, DEFINED_SIZES, DIV_ID)
+        .addService(googletag.pubads());
+
+      // Mandatory: set page_url
+      googletag.pubads().set('page_url', PAGE_URL);
+
+      // Included because your snippet had them
+      googletag.pubads().enableSingleRequest();
+      googletag.pubads().collapseEmptyDivs();
+
+      // Listener to extract IDs from ad response (mandatory)
+      googletag.pubads().addEventListener('slotRenderEnded', function(e) {
+        if (!slot || !e || e.slot !== slot) return;
+
+        updatePanel({
+          campaignId: e.campaignId,           // "Campaign/Order ID" (may be missing depending on setup)
+          lineItemId: e.lineItemId,
+          creativeId: e.creativeId,
+          advertiserId: e.advertiserId,
+          isEmpty: e.isEmpty,
+          size: e.size
+        });
+      });
+
+      googletag.enableServices();
+
+      // initial paint of panel once slot exists
+      updatePanel();
+    });
+
+    window.addEventListener("resize", debounceUpdateRequestedSizes);
+    window.addEventListener("load", function(){ updatePanel(); });
+  </script>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="row">
+      <aside class="panel">
+        <h2>GPT Debug Panel <span class="pill">studinfo.org</span></h2>
+
+        <div class="kv">
+          <span class="k">Network ID (runtime)</span>
+          <span class="v" id="dbg_network_id">N/A</span>
+
+          <span class="k">Ad unit path (runtime)</span>
+          <span class="v" id="dbg_ad_unit_path">N/A</span>
+
+          <span class="k">page_url</span>
+          <span class="v" id="dbg_page_url">N/A</span>
+
+          <span class="k">Div ID</span>
+          <span class="v" id="dbg_div_id">N/A</span>
+
+          <span class="k">Defined sizes</span>
+          <span class="v" id="dbg_defined_sizes">N/A</span>
+
+          <span class="k">Requested sizes (current request)</span>
+          <span class="v" id="dbg_requested_sizes">N/A</span>
+
+          <span class="k">Viewport</span>
+          <span class="v" id="dbg_viewport">N/A</span>
+
+          <span class="k">slotRenderEnded → isEmpty</span>
+          <span class="v" id="dbg_is_empty">N/A</span>
+
+          <span class="k">slotRenderEnded → rendered size</span>
+          <span class="v" id="dbg_rendered_size">N/A</span>
+
+          <span class="k">Campaign/Order ID</span>
+          <span class="v" id="dbg_campaign_id">N/A</span>
+          <div class="v" id="dbg_campaign_link">N/A</div>
+
+          <span class="k">Line item ID</span>
+          <span class="v" id="dbg_line_item_id">N/A</span>
+          <div class="v" id="dbg_line_item_link">N/A</div>
+
+          <span class="k">Creative ID</span>
+          <span class="v" id="dbg_creative_id">N/A</span>
+          <div class="v" id="dbg_creative_link">N/A</div>
+
+          <div class="hint">
+            Tip: <strong>DevTools → Network/Console</strong> (filter <code>gpt</code>/<code>doubleclick</code>).
+          </div>
+        </div>
+
+        <hr style="border:none;border-top:1px solid #eee;margin:12px 0;" />
+
+        <button id="btn_download" style="width:100%;padding:10px 12px;border-radius:12px;border:1px solid #e5e7eb;background:#111;color:#fff;cursor:pointer;">
+          Download this HTML
+        </button>
+
+        <script>
+          // Simple in-page download button (optional convenience)
+          document.getElementById("btn_download").addEventListener("click", function(){
+            const html = "<!doctype html>\n" + document.documentElement.outerHTML;
+            const blob = new Blob([html], {type: "text/html;charset=utf-8"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "gpt-test-studinfo.html";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+          });
+        </script>
+      </aside>
+
+      <main class="stage">
+        <h1>Ad Slot Render</h1>
+
+        <div class="adbox">
+          <div class="adlabel">
+            Ad unit: <code>/22908122590,23338908957/studinfo/d-slot_1</code> • Div: <code>div-gpt-ad-0634300577-99</code>
+          </div>
+
+          <!-- /22908122590,23338908957 -->
+          <div id="div-gpt-ad-0634300577-99" style="min-width: 728px; min-height: 90px;">
+            <script>
+              googletag.cmd.push(function() { googletag.display('div-gpt-ad-0634300577-99'); });
+            </script>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
