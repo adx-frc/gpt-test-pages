@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>GAM GPT Test Page</title>
+
+<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  margin:20px;
+}
+
+#ad-container{
+  margin-bottom:40px;
+}
+
+#debugPanel{
+  border:1px solid #ccc;
+  padding:15px;
+  background:#fafafa;
+  max-width:800px;
+  font-size:14px;
+}
+
+#debugPanel h3{
+  margin-top:0;
+}
+
+.debug-row{
+  margin:6px 0;
+}
+
+.debug-label{
+  font-weight:bold;
+}
+</style>
+
+<script>
+
+window.googletag = window.googletag || {cmd: []};
+
+var definedSizes = [[970,250],[728,90],[970,90]];
+var divId = "div-gpt-ad-5585491195-89";
+var pageUrlValue = "https://odessa-life.od.ua";
+
+googletag.cmd.push(function(){
+
+  var slot = googletag.defineSlot(
+    '/22908122590,23183077146/napensii/slot_1',
+    definedSizes,
+    divId
+  ).addService(googletag.pubads());
+
+  googletag.pubads().set('page_url', pageUrlValue);
+
+  googletag.pubads().enableSingleRequest();
+  googletag.pubads().collapseEmptyDivs();
+
+  var adUnitPath = slot.getAdUnitPath();
+  var networkId = (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
+
+  document.addEventListener("DOMContentLoaded", function(){
+
+    updatePanel({
+      networkId,
+      adUnitPath
+    });
+
+  });
+
+  googletag.pubads().addEventListener('slotRenderEnded', function(e){
+
+    if(e.slot === slot){
+
+      updatePanel({
+        campaignId: e.campaignId || "N/A",
+        lineItemId: e.lineItemId || "N/A",
+        creativeId: e.creativeId || "N/A",
+        advertiserId: e.advertiserId || "N/A",
+        renderedSize: e.size ? e.size.join("x") : "N/A",
+        isEmpty: e.isEmpty
+      });
+
+    }
+
+  });
+
+  googletag.enableServices();
+
+});
+
+
+function viewport(){
+  return {
+    w: window.innerWidth,
+    h: window.innerHeight
+  };
+}
+
+function requestedSizes(){
+  return definedSizes.map(s => s.join("x")).join(", ");
+}
+
+function updatePanel(data){
+
+  var v = viewport();
+
+  if(data.networkId){
+    document.getElementById("networkId").textContent = data.networkId;
+  }
+
+  if(data.adUnitPath){
+    document.getElementById("adUnitPath").textContent = data.adUnitPath;
+  }
+
+  document.getElementById("pageUrl").textContent = pageUrlValue;
+  document.getElementById("divId").textContent = divId;
+  document.getElementById("definedSizes").textContent = definedSizes.map(s=>s.join("x")).join(", ");
+  document.getElementById("requestedSizes").textContent = requestedSizes();
+  document.getElementById("viewport").textContent = v.w + " x " + v.h;
+
+  if(data.lineItemId){
+
+    var networkId = document.getElementById("networkId").textContent;
+
+    document.getElementById("lineItemId").textContent = data.lineItemId;
+    document.getElementById("creativeId").textContent = data.creativeId;
+    document.getElementById("campaignId").textContent = data.campaignId;
+
+    if(networkId && data.lineItemId !== "N/A"){
+      document.getElementById("lineItemLink").href =
+        "https://admanager.google.com/"+networkId+"#delivery/line_item/detail/"+data.lineItemId;
+    }
+
+    if(networkId && data.creativeId !== "N/A"){
+      document.getElementById("creativeLink").href =
+        "https://admanager.google.com/"+networkId+"#delivery/creative/detail/"+data.creativeId;
+    }
+
+    if(networkId && data.campaignId !== "N/A"){
+      document.getElementById("orderLink").href =
+        "https://admanager.google.com/"+networkId+"#delivery/order/detail/"+data.campaignId;
+    }
+
+  }
+
+}
+
+window.addEventListener("resize", function(){
+  updatePanel({});
+});
+
+</script>
+
+</head>
+<body>
+
+<h2>Google Ad Manager GPT Test</h2>
+
+<div id="ad-container">
+
+<div id="div-gpt-ad-5585491195-89" style="min-width:728px; min-height:90px;"></div>
+
+<script>
+googletag.cmd.push(function(){
+  googletag.display("div-gpt-ad-5585491195-89");
+});
+</script>
+
+</div>
+
+
+<div id="debugPanel">
+
+<h3>Debug Panel</h3>
+
+<div class="debug-row"><span class="debug-label">Network ID:</span> <span id="networkId"></span></div>
+<div class="debug-row"><span class="debug-label">Ad unit path:</span> <span id="adUnitPath"></span></div>
+<div class="debug-row"><span class="debug-label">page_url:</span> <span id="pageUrl"></span></div>
+<div class="debug-row"><span class="debug-label">Div ID:</span> <span id="divId"></span></div>
+<div class="debug-row"><span class="debug-label">Defined sizes:</span> <span id="definedSizes"></span></div>
+<div class="debug-row"><span class="debug-label">Requested sizes:</span> <span id="requestedSizes"></span></div>
+<div class="debug-row"><span class="debug-label">Viewport:</span> <span id="viewport"></span></div>
+
+<hr>
+
+<div class="debug-row">
+<span class="debug-label">Campaign / Order ID:</span>
+<span id="campaignId">N/A</span>
+<a id="orderLink" target="_blank" rel="noopener">Open</a>
+</div>
+
+<div class="debug-row">
+<span class="debug-label">Line item ID:</span>
+<span id="lineItemId">N/A</span>
+<a id="lineItemLink" target="_blank" rel="noopener">Open</a>
+</div>
+
+<div class="debug-row">
+<span class="debug-label">Creative ID:</span>
+<span id="creativeId">N/A</span>
+<a id="creativeLink" target="_blank" rel="noopener">Open</a>
+</div>
+
+<hr>
+
+<div class="debug-row">
+DevTools → Network / Console (filter <b>gpt</b> or <b>doubleclick</b>)
+</div>
+
+</div>
+
+</body>
+</html>
