@@ -1,324 +1,218 @@
-
 <!DOCTYPE html>
-<html lang="en" >
-    
-  <!--
-	8888888b.  88888888 888888b.   888888888                          
-	888  "Y88b 888      888  Y88b     888                             
-	888    888 888      888   888     888                             
-	888    888 888888   888  d88P     888   8888b.   .d88b.  .d8888b  
-	888    888 888      888888P"      888      "88b d88P"88b 88K      
-	888    888 888      888           888  .d888888 888  888 "Y8888b. 
-	888  .d88P 888      888           888  888  888 Y88b 888      X88 
-	8888888P"  888      888           888  "Y888888  "Y88888  88888P' 
-	                                                     888          
-	                                                Y8b d88P          
-	                                                  "Y88P"          
-	                                                www.dfptags.com
-	  -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
+<title>GAM GPT Test Page</title>
 
-    
-  <head>
-    
-    <title>
-      Network ID: 22908122590 - async - SRA
-    </title>
-    <link rel="canonical" href="https://dfpgpt.appspot.com/g/$MYnDe*Ac"/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0' />
-    
+<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
-    
-    <link rel="stylesheet" type="text/css" href="/stylesheets/staging_base.css"/>
-    
-<!-- DFP UI Links -->
-<script>
-  function icsUrls(aS, data){
-    function makeUrl(id,url){
-      el = '<a target="_blank" href="' + url + id + '">' + id + '</a>'
-      return el;
-    }
-    netId = '22908122590';
-    lUrl = 'https://admanager.google.com/' + netId + '#delivery/LineItemDetail/lineItemId=';
-    cUrl = 'https://admanager.google.com/' + netId + '#delivery/CreativeDetail/creativeId=';
-    cmUrl = 'https://admanager.google.com/' + netId + '#delivery/OrderDetail/orderId=';
-    aUrl = 'https://admanager.google.com/' + netId + '#admin/companyDetail/id=';
-    qIdUrl = 'https://admanager.google.com/' + netId + '#troubleshooting/screenshot/queryId=';
+<style>
+body{
+  font-family: Arial, sans-serif;
+  margin:20px;
+}
 
-    $('#aid'+ as).html(data.advertiserId ? makeUrl(data.advertiserId, aUrl) : 'N/A');
-    $('#cmid'+ as).html(data.campaignId ? makeUrl(data.campaignId, cmUrl) : 'N/A');
-    $('#lid'+ as).html(data.lineItemId ? makeUrl(data.lineItemId, lUrl) : 'N/A');
-    $('#cid'+ as).html(data.creativeId ? makeUrl(data.creativeId, cUrl) : 'N/A');
-    $('#qid'+ as).html(data.qid ? makeUrl(data.qid, qIdUrl) : 'N/A');
-  }
-</script>
-<!-- End of DFP UI Links -->
+#ad-container{
+  margin-bottom:40px;
+}
 
-    
+#debugPanel{
+  border:1px solid #ccc;
+  padding:15px;
+  background:#fafafa;
+  max-width:800px;
+  font-size:14px;
+}
 
+#debugPanel h3{
+  margin-top:0;
+}
 
-    
-      
+.debug-row{
+  margin:6px 0;
+}
+
+.debug-label{
+  font-weight:bold;
+}
+</style>
 
 <script>
-  var fluidClass = function(){
-    adSlots = googletag.pubads().getSlots();
-    for (var i = 0; i < adSlots.length; i++) {
-      if (adSlots[i].getSizes().indexOf('fluid') > -1){
-        $('#'+adSlots[i].getSlotElementId()).addClass('fluid-div');
-      }
-    }
-  }
-</script>
 
+window.googletag = window.googletag || {cmd: []};
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script>
-  var oopAlert = false;
-  var adslotsEventData = [];
-  function checkOop(as){
-    idx = top.$('#DFPTagsController').index();
-    if (idx > 0){
-      $('#oopnote' + as).show();
-      elements = []
-      if(!oopAlert){
-        for (var i = 0; i < idx; i++){
-          elements.push(top.$('body').children().eq(i)[0]);
-        }
-        console.group('\n%cAttention:\n ', 'font-size: 120%;font-weight:bold;color:red');
-        console.log('   The following Elements have been added to the page DOM\n' +
-                    '   by one of the ads:\n ');
-        console.log('   ', elements);
-        console.log('   \n' +
-                    '   This can indicate that one or more OOP Creatives have\n' +
-                    '   been delivered and rendered on the page, but the elements\n' +
-                    '   containing the creatives might be hidden from view.\n\n' +
-                    '   To make sure the OOP ads rendered correctly, please inspect\n' +
-                    '   the above elements which should be found at the very top of\n' +
-                    '   the BODY element on the top.window.'
-                   );
-        console.groupEnd();
-      }
-      oopAlert = true;
-    }
-  }
-</script>
+var definedSizes = [[970,250],[728,90],[970,90]];
+var divId = "div-gpt-ad-5585491195-89";
+var pageUrlValue = "https://odessa-life.od.ua";
 
-<script>
-  function adslotsData(data) {
-    adSlots = googletag.pubads().getSlots();
-    if (typeof fluidClass == 'function'){
-      fluidClass();
-    }
-    adslotsEventData.push(data);
-    as = adSlots.indexOf(data.slot) + 1
-    console.group('%cAdslot: ' + as, 'font-size: 120%;font-weight:bold');
-    if (!data.isEmpty) {
-      $('#asinfo' + as).show();
-      console.log('   %cAdvertiser ID:  ', 'font-style:italic', data.advertiserId);
-      console.log('   %cCampaign   ID:  ', 'font-style:italic', data.campaignId);
-      console.log('   %cLineItem   ID:  ', 'font-style:italic', data.lineItemId);
-      console.log('   %cCreative   ID:  ', 'font-style:italic', data.creativeId);
-      $('#aid'+ as).text(data.advertiserId ? data.advertiserId : 'N/A');
-      $('#cmid'+ as).text(data.campaignId ? data.campaignId : 'N/A');
-      $('#lid'+ as).text(data.lineItemId ? data.lineItemId : 'N/A');
-      $('#cid'+ as).text(data.creativeId ? data.creativeId : 'N/A');
-      $('#sz' + as).text(data.size[0] + 'x' + data.size[1]);
-      $('#asInfo-wrapper' + as).width(data.size[0] >= 300 ? data.size[0] + 22 : 322);
-      $('#qid' + as).text(adSlots[as - 1].getEscapedQemQueryId());
-      data.qid = adSlots[as - 1].getEscapedQemQueryId();
+googletag.cmd.push(function(){
 
-      if(data.size[0] == 1 && data.size[1] == 1){
-        window.setTimeout(checkOop, 2000, as);
-      }
-      if(typeof icsUrls !== 'undefined'){
-        icsUrls(as, data);
-      }
-    } else {
-      console.log('   %cNo Ad Returned!', 'font-style:italic');
-      $('#noad' + as).show();
-      $('#noadqid' + as).text(adSlots[as - 1].getEscapedQemQueryId());
-      $('#noadQID' + as).show();
-    }
-    console.log('   %cQuery      ID:  ', 'font-style:italic',
-                  adSlots[as - 1].getEscapedQemQueryId());
-    console.groupEnd();
-  }
-</script><!-- Start GPT Tag -->
-<script async src='https://securepubads.g.doubleclick.net/tag/js/gpt.js'></script>
-<script>
-  window.googletag = window.googletag || {cmd: []};
-  googletag.cmd.push(function() {
-    googletag.defineSlot('/22908122590/od-life/slot_1', [[970,250],[728,90],[970,90]], 'div-gpt-ad-7256664-1')
-             .addService(googletag.pubads());
+  var slot = googletag.defineSlot(
+    '/22908122590,23183077146/napensii/slot_1',
+    definedSizes,
+    divId
+  ).addService(googletag.pubads());
 
-    googletag.pubads().enableSingleRequest();
+  googletag.pubads().set('page_url', pageUrlValue);
 
-    googletag.pubads().set('page_url', 'https://odessa-life.od.ua');
+  googletag.pubads().enableSingleRequest();
+  googletag.pubads().collapseEmptyDivs();
 
-    googletag.pubads().addEventListener('slotRenderEnded', adslotsData);
+  var adUnitPath = slot.getAdUnitPath();
+  var networkId = (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
 
-    googletag.enableServices();
+  document.addEventListener("DOMContentLoaded", function(){
+
+    updatePanel({
+      networkId,
+      adUnitPath
+    });
+
   });
+
+  googletag.pubads().addEventListener('slotRenderEnded', function(e){
+
+    if(e.slot === slot){
+
+      updatePanel({
+        campaignId: e.campaignId || "N/A",
+        lineItemId: e.lineItemId || "N/A",
+        creativeId: e.creativeId || "N/A",
+        advertiserId: e.advertiserId || "N/A",
+        renderedSize: e.size ? e.size.join("x") : "N/A",
+        isEmpty: e.isEmpty
+      });
+
+    }
+
+  });
+
+  googletag.enableServices();
+
+});
+
+
+function viewport(){
+  return {
+    w: window.innerWidth,
+    h: window.innerHeight
+  };
+}
+
+function requestedSizes(){
+  return definedSizes.map(s => s.join("x")).join(", ");
+}
+
+function updatePanel(data){
+
+  var v = viewport();
+
+  if(data.networkId){
+    document.getElementById("networkId").textContent = data.networkId;
+  }
+
+  if(data.adUnitPath){
+    document.getElementById("adUnitPath").textContent = data.adUnitPath;
+  }
+
+  document.getElementById("pageUrl").textContent = pageUrlValue;
+  document.getElementById("divId").textContent = divId;
+  document.getElementById("definedSizes").textContent = definedSizes.map(s=>s.join("x")).join(", ");
+  document.getElementById("requestedSizes").textContent = requestedSizes();
+  document.getElementById("viewport").textContent = v.w + " x " + v.h;
+
+  if(data.lineItemId){
+
+    var networkId = document.getElementById("networkId").textContent;
+
+    document.getElementById("lineItemId").textContent = data.lineItemId;
+    document.getElementById("creativeId").textContent = data.creativeId;
+    document.getElementById("campaignId").textContent = data.campaignId;
+
+    if(networkId && data.lineItemId !== "N/A"){
+      document.getElementById("lineItemLink").href =
+        "https://admanager.google.com/"+networkId+"#delivery/line_item/detail/"+data.lineItemId;
+    }
+
+    if(networkId && data.creativeId !== "N/A"){
+      document.getElementById("creativeLink").href =
+        "https://admanager.google.com/"+networkId+"#delivery/creative/detail/"+data.creativeId;
+    }
+
+    if(networkId && data.campaignId !== "N/A"){
+      document.getElementById("orderLink").href =
+        "https://admanager.google.com/"+networkId+"#delivery/order/detail/"+data.campaignId;
+    }
+
+  }
+
+}
+
+window.addEventListener("resize", function(){
+  updatePanel({});
+});
+
 </script>
-<!-- End GPT Tag -->
 
+</head>
+<body>
 
+<h2>Google Ad Manager GPT Test</h2>
 
+<div id="ad-container">
 
-    
-    
-    
+<div id="div-gpt-ad-5585491195-89" style="min-width:728px; min-height:90px;"></div>
 
-    
-    
-    <!-- Google Analytics -->
-    <script>
-      if(document.location.hostname.search('dfpgpt') >= 0){
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-7622746-7', 'auto');
-        ga('send', 'pageview');
-      }
-    </script>
-    <!-- End Google Analytics -->
-    
-  </head>
+<script>
+googletag.cmd.push(function(){
+  googletag.display("div-gpt-ad-5585491195-89");
+});
+</script>
 
-  <body>
-    <div class="staging-container" id="DFPTagsController">
-    
-<div class="shorturl">
-  <p>Short URL:<span><a href='https://dfpgpt.appspot.com/s/$MYnDe*Ac'>https://dfpgpt.appspot.com/s/$MYnDe*Ac</a>
-    </span></p>
-  <div><a href="https://dfpgpt.appspot.com/g/$MYnDe*Ac">Back to Generator Page</a></div>
 </div>
 
-<p id='stage-title'>
-  <b>Network ID: 22908122590</b>
-</p>
-<br/>
 
-<p><b>Tag type:</b> GPT<br/>
-  
-  <b>Request type:</b> SRA<br/>
-  
-  
-</p>
-<br/>
+<div id="debugPanel">
+
+<h3>Debug Panel</h3>
+
+<div class="debug-row"><span class="debug-label">Network ID:</span> <span id="networkId"></span></div>
+<div class="debug-row"><span class="debug-label">Ad unit path:</span> <span id="adUnitPath"></span></div>
+<div class="debug-row"><span class="debug-label">page_url:</span> <span id="pageUrl"></span></div>
+<div class="debug-row"><span class="debug-label">Div ID:</span> <span id="divId"></span></div>
+<div class="debug-row"><span class="debug-label">Defined sizes:</span> <span id="definedSizes"></span></div>
+<div class="debug-row"><span class="debug-label">Requested sizes:</span> <span id="requestedSizes"></span></div>
+<div class="debug-row"><span class="debug-label">Viewport:</span> <span id="viewport"></span></div>
+
 <hr>
 
-    
-    
-    
-  
-    <div>
-      <b class="as-title">Ad slot 1</b><br/>
-      <b>Ad Unit:</b> od-life/slot_1<br/>
-      <b>Ad slot Size:</b>
-      
-      970x250,728x90,970x90
-      
-      
-      
-      
-      
-      <div class="asInfo" id="asInfo-wrapper1">
-        <span style="display:none" id="asinfo1" >
-          <dfn><b>Advertiser ID:</b> <em id="aid1"></em></dfn>
-          - <dfn><b>Campaign ID:</b> <em id="cmid1"></em></dfn>
-          - <dfn><b>Line Item ID:</b> <em id="lid1"></em></dfn>
-          - <dfn><b>Creative ID:</b> <em id="cid1"></em></dfn>
-          
-          - <dfn><b>Response Size:</b> <em id="sz1"></em></dfn>
-          <br>
-          
-            
-          <dfn style="display:none" class="alert oop info-margin" id="fluidnote1">
-            <b>Attention:</b> The Native Ad in this ad slot might be truncated and/or might
-            not render corretcly due to the Live Ads preview page being rendered inside an
-            iFrame. The Native Ad will render correctly on the
-            <a href="https://dfpgpt.appspot.com/s/$MYnDe*Ac" target="_bank">External Test Page</a>.
-          </dfn>
-          <dfn class="info-margin"><b>Query ID:</b> <em id="qid1"></em></dfn>
-          
-        </span>
-        <em style="display:none" id="noad1"><br/><b>No Ad Returned!</b></em>
-        <dfn style="display:none" id="noadQID1" class="info-margin noad"><b>Query ID:
-          </b> <em id="noadqid1"></em></dfn>
-      </div>
-      
-      
-    </div>
-  
-  <!-- GPT AdSlot 1 for Ad unit 'od-life/slot_1' ### Size: [[970,250],[728,90],[970,90]] -->
-<div id='div-gpt-ad-7256664-1'>
-  <script>
-    googletag.cmd.push(function() { googletag.display('div-gpt-ad-7256664-1'); });
-  </script>
-</div>
-<!-- End AdSlot 1 -->
-
-
-  
-  
-  
-    <hr>
-    
-
-    
-<div class="gptcode">
-  
-  <p>HEAD Tag</p>
-  <pre>&lt;!-- Start GPT Tag --&gt;
-&lt;script async src=&apos;https://securepubads.g.doubleclick.net/tag/js/gpt.js&apos;&gt;&lt;/script&gt;
-&lt;script&gt;
-  window.googletag = window.googletag || {cmd: []};
-  googletag.cmd.push(function() {
-    googletag.defineSlot(&apos;/22908122590,23183077146/od-life/slot_1&apos;, [[970,250],[728,90],[970,90]], &apos;div-gpt-ad-7256664-1&apos;)
-             .addService(googletag.pubads());
-
-    googletag.pubads().enableSingleRequest();
-
-    googletag.pubads().set(&apos;page_url&apos;, &apos;https://odessa-life.od.ua&apos;);
-
-    googletag.enableServices();
-  });
-&lt;/script&gt;
-&lt;!-- End GPT Tag --&gt;
-
-</pre>
-  
-  
-  <p>BODY Tags</p>
-  <pre>&lt;!-- GPT AdSlot 1 for Ad unit &apos;od-life/slot_1&apos; ### Size: [[970,250],[728,90],[970,90]] --&gt;
-&lt;div id=&apos;div-gpt-ad-7256664-1&apos;&gt;
-  &lt;script&gt;
-    googletag.cmd.push(function() { googletag.display(&apos;div-gpt-ad-7256664-1&apos;); });
-  &lt;/script&gt;
-&lt;/div&gt;
-&lt;!-- End AdSlot 1 --&gt;
-
-</pre>
-  
+<div class="debug-row">
+<span class="debug-label">Campaign / Order ID:</span>
+<span id="campaignId">N/A</span>
+<a id="orderLink" target="_blank" rel="noopener">Open</a>
 </div>
 
-    
-    
-    
-    
-    
-      
-<img src='https://megadash.googleplex.com/tracking/5470558783275008'
-     height='0' width='0' style='display:none'/>
+<div class="debug-row">
+<span class="debug-label">Line item ID:</span>
+<span id="lineItemId">N/A</span>
+<a id="lineItemLink" target="_blank" rel="noopener">Open</a>
+</div>
 
-    
-    </div>
-    
-    <script src="/scripts/ads.js"></script>
-    <script src="/scripts/ab_detect.js"></script>
-    
-  </body>
+<div class="debug-row">
+<span class="debug-label">Creative ID:</span>
+<span id="creativeId">N/A</span>
+<a id="creativeLink" target="_blank" rel="noopener">Open</a>
+</div>
+
+<hr>
+
+<div class="debug-row">
+DevTools → Network / Console (filter <b>gpt</b> or <b>doubleclick</b>)
+</div>
+
+</div>
+
+</body>
 </html>
