@@ -1,0 +1,63 @@
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mapping Example</title>
+    <script async src='https://securepubads.g.doubleclick.net/tag/js/gpt.js'></script>
+<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+<script>
+  window.googletag = window.googletag || { cmd: [] };
+
+  googletag.cmd.push(function () {
+    var mapping1 = googletag.sizeMapping()
+      // Desktop: viewport ≥970px
+      // Both desktop creatives fit
+      .addSize([970, 0], [[970, 90], [728, 90]])
+
+      // Desktop: 728–969px
+      // Only 728x90 fits
+      .addSize([728, 0], [[728, 90]])
+
+      // Mobile: 320–727px
+      // Both mobile creatives fit
+      .addSize([320, 0], [[320, 100], [320, 50]])
+
+      // Mobile: 300–319px
+      // No creatives fit → disable
+      .addSize([300, 0], [])
+
+      // Global safety rule
+      .addSize([0, 0], [])
+      .build();
+
+    googletag
+      .defineSlot(
+        '/22908122590,38231428/liveam/slot_1',
+        [[970, 90], [728, 90], [320, 100], [320, 50]],
+        'div-gpt-ad-3823142802'
+      )
+      .defineSizeMapping(mapping1)
+      .addService(googletag.pubads());
+    googletag.pubads().set('page_url', 'https://liveam.tv');
+    googletag.pubads().enableSingleRequest();
+    googletag.pubads().collapseEmptyDivs();
+    googletag.enableServices();
+  });
+</script>
+
+    
+  </head>
+  <body>
+   <div id="div-gpt-ad-3823142802"></div>
+<script>
+  googletag.cmd.push(function () {
+    googletag.display('div-gpt-ad-3823142802');
+  });
+</script>
+
+  </body>
+</html>
