@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GAM GPT Test Page — vctr.media</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121933;
+      --panel-2: #1a2347;
+      --text: #eef2ff;
+      --muted: #aeb8d6;
+      --accent: #76a9ff;
+      --ok: #6ee7b7;
+      --warn: #fbbf24;
+      --border: #2a376b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #0b1020, #111935 35%, #0f1730 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 20px;
+      grid-template-columns: minmax(320px, 1fr) 360px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: rgba(18, 25, 51, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    .card h1,
+    .card h2 {
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(118,169,255,0.12), rgba(118,169,255,0.03));
+    }
+
+    .sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .slot-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 680px;
+      padding: 24px;
+      background: rgba(255,255,255,0.02);
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+    }
+
+    #div-gpt-ad-1536286916-56 {
+      min-width: 300px;
+      min-height: 600px;
+      background: rgba(255,255,255,0.03);
+      outline: 1px dashed rgba(255,255,255,0.18);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel-2);
+    }
+
+    .k {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .v {
+      color: var(--text);
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .links a {
+      color: var(--accent);
+      text-decoration: none;
+      margin-right: 12px;
+    }
+
+    .links a:hover { text-decoration: underline; }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+    }
+
+    .status-ok { color: var(--ok); }
+    .status-warn { color: var(--warn); }
+  </style>
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+
+    var slot;
+    var pageUrl = 'https://vctr.media';
+    var divId = 'div-gpt-ad-1536286916-56';
+    var definedSizes = [[300, 600]];
+    var mappingRules = null;
+    var lastRenderInfo = {
+      campaignId: '',
+      lineItemId: '',
+      creativeId: '',
+      advertiserId: '',
+      size: '',
+      isEmpty: null
+    };
+
+    function formatSizes(sizes) {
+      if (!sizes || sizes.length === 0) return 'None';
+      if (sizes === 'fluid') return 'fluid';
+      if (!Array.isArray(sizes)) return String(sizes);
+      return sizes.map(function(size) {
+        if (size === 'fluid') return 'fluid';
+        if (Array.isArray(size)) return size[0] + 'x' + size[1];
+        return String(size);
+      }).join(', ');
+    }
+
+    function getViewport() {
+      return {
+        width: Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0),
+        height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+      };
+    }
+
+    function getRequestedSizes() {
+      if (!mappingRules || !mappingRules.length) return definedSizes;
+      var vp = getViewport();
+      for (var i = 0; i < mappingRules.length; i++) {
+        var rule = mappingRules[i];
+        if (vp.width >= rule.min[0] && vp.height >= rule.min[1]) {
+          return rule.sizes;
+        }
+      }
+      return [];
+    }
+
+    function makeGamLink(type, networkId, entityId) {
+      if (!networkId || !entityId) return 'N/A';
+      var href = '';
+      if (type === 'line_item') href = 'https://admanager.google.com/' + networkId + '#delivery/line_item/detail/' + entityId;
+      if (type === 'creative') href = 'https://admanager.google.com/' + networkId + '#delivery/creative/detail/' + entityId;
+      if (type === 'order') href = 'https://admanager.google.com/' + networkId + '#delivery/order/detail/' + entityId;
+      return '<a target="_blank" rel="noopener" href="' + href + '">' + entityId + '</a>';
+    }
+
+    function updatePanel() {
+      var adUnitPath = slot && typeof slot.getAdUnitPath === 'function' ? slot.getAdUnitPath() : '';
+      var networkId = (adUnitPath.match(/^\/(\d+)\//) || [])[1] || '';
+      if (!networkId) {
+        var firstPathToken = (adUnitPath.match(/^\/([^/]+)\//) || [])[1] || '';
+        networkId = firstPathToken.split(',')[0] || '';
+      }
+
+      var vp = getViewport();
+      var requestedSizes = getRequestedSizes();
+
+      document.getElementById('networkId').textContent = networkId || 'N/A';
+      document.getElementById('adUnitPath').textContent = adUnitPath || 'N/A';
+      document.getElementById('pageUrl').textContent = pageUrl;
+      document.getElementById('divId').textContent = divId;
+      document.getElementById('definedSizes').textContent = formatSizes(definedSizes);
+      document.getElementById('requestedSizes').textContent = formatSizes(requestedSizes);
+      document.getElementById('viewport').textContent = vp.width + 'x' + vp.height;
+
+      document.getElementById('campaignId').innerHTML = lastRenderInfo.campaignId
+        ? makeGamLink('order', networkId, lastRenderInfo.campaignId)
+        : 'N/A';
+      document.getElementById('lineItemId').innerHTML = lastRenderInfo.lineItemId
+        ? makeGamLink('line_item', networkId, lastRenderInfo.lineItemId)
+        : 'N/A';
+      document.getElementById('creativeId').innerHTML = lastRenderInfo.creativeId
+        ? makeGamLink('creative', networkId, lastRenderInfo.creativeId)
+        : 'N/A';
+      document.getElementById('advertiserId').textContent = lastRenderInfo.advertiserId || 'N/A';
+      document.getElementById('renderSize').textContent = lastRenderInfo.size || 'N/A';
+      document.getElementById('isEmpty').innerHTML = lastRenderInfo.isEmpty === null
+        ? 'N/A'
+        : (lastRenderInfo.isEmpty ? '<span class="status-warn">Yes</span>' : '<span class="status-ok">No</span>');
+    }
+
+    function debounce(fn, wait) {
+      var t;
+      return function() {
+        clearTimeout(t);
+        t = setTimeout(fn, wait);
+      };
+    }
+
+    googletag.cmd.push(function () {
+      slot = googletag
+        .defineSlot('/22908122590,23340571135/vctr/slot_1', [[300, 600]], divId)
+        .addService(googletag.pubads());
+
+      googletag.pubads().set('page_url', pageUrl);
+      googletag.pubads().enableSingleRequest();
+      googletag.pubads().collapseEmptyDivs();
+
+      googletag.pubads().addEventListener('slotRenderEnded', function (e) {
+        if (!slot || e.slot !== slot) return;
+
+        lastRenderInfo = {
+          campaignId: e.campaignId || '',
+          lineItemId: e.lineItemId || '',
+          creativeId: e.creativeId || '',
+          advertiserId: e.advertiserId || '',
+          size: Array.isArray(e.size) ? (e.size[0] + 'x' + e.size[1]) : (e.size || ''),
+          isEmpty: typeof e.isEmpty === 'boolean' ? e.isEmpty : null
+        };
+
+        updatePanel();
+      });
+
+      googletag.enableServices();
+      updatePanel();
+    });
+
+    window.addEventListener('load', updatePanel);
+    window.addEventListener('resize', debounce(updatePanel, 150));
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <div class="header">
+        <h1>GPT test page</h1>
+        <div class="sub">Standalone page for validating a Google Ad Manager slot and inspecting runtime response data.</div>
+      </div>
+      <div class="content">
+        <div class="slot-wrap">
+          <div id="div-gpt-ad-1536286916-56"></div>
+        </div>
+        <script>
+          googletag.cmd.push(function () {
+            googletag.display('div-gpt-ad-1536286916-56');
+          });
+        </script>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="header">
+        <h2>Debug panel</h2>
+        <div class="sub">DevTools → Network/Console (filter gpt/doubleclick).</div>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <div class="row"><div class="k">Network ID</div><div class="v mono" id="networkId">N/A</div></div>
+          <div class="row"><div class="k">Ad unit path</div><div class="v mono" id="adUnitPath">N/A</div></div>
+          <div class="row"><div class="k">page_url</div><div class="v mono" id="pageUrl">N/A</div></div>
+          <div class="row"><div class="k">Div ID</div><div class="v mono" id="divId">N/A</div></div>
+          <div class="row"><div class="k">Defined sizes</div><div class="v mono" id="definedSizes">N/A</div></div>
+          <div class="row"><div class="k">Requested sizes</div><div class="v mono" id="requestedSizes">N/A</div></div>
+          <div class="row"><div class="k">Viewport</div><div class="v mono" id="viewport">N/A</div></div>
+          <div class="row"><div class="k">Campaign/Order ID</div><div class="v mono links" id="campaignId">N/A</div></div>
+          <div class="row"><div class="k">Line item ID</div><div class="v mono links" id="lineItemId">N/A</div></div>
+          <div class="row"><div class="k">Creative ID</div><div class="v mono links" id="creativeId">N/A</div></div>
+          <div class="row"><div class="k">Advertiser ID</div><div class="v mono" id="advertiserId">N/A</div></div>
+          <div class="row"><div class="k">Rendered size</div><div class="v mono" id="renderSize">N/A</div></div>
+          <div class="row"><div class="k">Empty response</div><div class="v mono" id="isEmpty">N/A</div></div>
+        </div>
+        <div style="margin-top:12px;">
+          <span class="pill">enableSingleRequest()</span>
+          <span class="pill">collapseEmptyDivs()</span>
+          <span class="pill">page_url set</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>
