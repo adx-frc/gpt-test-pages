@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GPT Test Page - odessa-life.od.ua slot_2</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a33;
+      --panel-2: #182243;
+      --text: #e8ecf8;
+      --muted: #aab6d3;
+      --accent: #76a7ff;
+      --ok: #59d38c;
+      --warn: #ffcc66;
+      --bad: #ff7b7b;
+      --border: #2a3968;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #111827;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 24px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .stage, .debug {
+      background: #fff;
+      border: 1px solid #dbe2f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(17, 24, 39, 0.05);
+      overflow: hidden;
+    }
+
+    .stage-header, .debug-header {
+      padding: 14px 16px;
+      background: #eef3ff;
+      border-bottom: 1px solid #dbe2f0;
+      font-weight: 700;
+    }
+
+    .stage-body {
+      padding: 24px;
+      min-height: 420px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      background:
+        linear-gradient(45deg, #f9fbff 25%, transparent 25%),
+        linear-gradient(-45deg, #f9fbff 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f9fbff 75%),
+        linear-gradient(-45deg, transparent 75%, #f9fbff 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+    }
+
+    .slot-box {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slot-label {
+      font-size: 13px;
+      color: #4b5563;
+    }
+
+    #gpt-slot-2 {
+      width: 970px;
+      height: 250px;
+      max-width: 100%;
+      min-height: 250px;
+      border: 2px dashed #b8c4e6;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .debug-body {
+      padding: 14px 16px;
+      background: #0b1020;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .row {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .value {
+      word-break: break-word;
+    }
+
+    .mono {
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    .links a {
+      color: #9cc0ff;
+      text-decoration: none;
+      margin-right: 12px;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .footnote {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-ok { color: var(--ok); }
+    .status-warn { color: var(--warn); }
+    .status-bad { color: var(--bad); }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .debug {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 1020px) {
+      #gpt-slot-2 {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+
+    var slot;
+    var definedSizes = [[970, 250]];
+    var mappingRules = null; // no sizeMapping provided
+    var pageUrlValue = "https://odessa-life.od.ua/";
+    var divIdValue = "gpt-slot-2";
+    var renderState = {
+      adUnitPath: "",
+      networkId: "",
+      lineItemId: "",
+      creativeId: "",
+      campaignId: "",
+      advertiserId: "",
+      renderedSize: "",
+      isEmpty: null
+    };
+
+    function formatSizes(sizes) {
+      if (sizes === null || typeof sizes === "undefined") return "N/A";
+      if (sizes === "fluid") return "fluid";
+      if (!Array.isArray(sizes)) return String(sizes);
+      if (sizes.length === 0) return "None";
+
+      if (typeof sizes[0] === "number") {
+        return sizes[0] + "x" + sizes[1];
+      }
+
+      return sizes.map(function(size) {
+        if (size === "fluid") return "fluid";
+        if (Array.isArray(size)) return size[0] + "x" + size[1];
+        return String(size);
+      }).join(", ");
+    }
+
+    function getViewport() {
+      var w = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      var h = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+      return { width: w, height: h };
+    }
+
+    function getRequestedSizes() {
+      if (!mappingRules) return definedSizes;
+
+      var vp = getViewport();
+      for (var i = 0; i < mappingRules.length; i++) {
+        var rule = mappingRules[i];
+        var min = rule.min || [0, 0];
+        if (vp.width >= min[0] && vp.height >= min[1]) {
+          return rule.sizes;
+        }
+      }
+      return definedSizes;
+    }
+
+    function gamLink(type, networkId, id) {
+      if (!networkId || !id) return "N/A";
+      var base = "https://admanager.google.com/" + encodeURIComponent(networkId);
+      if (type === "lineItem") {
+        return '<a target="_blank" rel="noopener" href="' + base + '#delivery/line_item/detail/' + encodeURIComponent(id) + '">Open line item</a>';
+      }
+      if (type === "creative") {
+        return '<a target="_blank" rel="noopener" href="' + base + '#delivery/creative/detail/' + encodeURIComponent(id) + '">Open creative</a>';
+      }
+      if (type === "campaign") {
+        return '<a target="_blank" rel="noopener" href="' + base + '#delivery/order/detail/' + encodeURIComponent(id) + '">Open order/campaign</a>';
+      }
+      return "N/A";
+    }
+
+    function setText(id, value) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function setHTML(id, value) {
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = value;
+    }
+
+    function updateDebugPanel() {
+      var requestedSizes = getRequestedSizes();
+      var vp = getViewport();
+
+      setText("networkId", renderState.networkId || "N/A");
+      setText("adUnitPath", renderState.adUnitPath || "N/A");
+      setText("pageUrl", pageUrlValue);
+      setText("divId", divIdValue);
+      setText("definedSizes", formatSizes(definedSizes));
+      setText("requestedSizes", formatSizes(requestedSizes));
+      setText("viewport", vp.width + "x" + vp.height);
+      setText("campaignId", renderState.campaignId || "N/A");
+      setText("lineItemId", renderState.lineItemId || "N/A");
+      setText("creativeId", renderState.creativeId || "N/A");
+      setText("advertiserId", renderState.advertiserId || "N/A");
+      setText("renderedSize", renderState.renderedSize || "N/A");
+
+      if (renderState.isEmpty === null) {
+        setText("isEmpty", "N/A");
+        document.getElementById("isEmpty").className = "value";
+      } else {
+        setText("isEmpty", String(renderState.isEmpty));
+        document.getElementById("isEmpty").className = "value " + (renderState.isEmpty ? "status-warn" : "status-ok");
+      }
+
+      setHTML("campaignLink", gamLink("campaign", renderState.networkId, renderState.campaignId));
+      setHTML("lineItemLink", gamLink("lineItem", renderState.networkId, renderState.lineItemId));
+      setHTML("creativeLink", gamLink("creative", renderState.networkId, renderState.creativeId));
+    }
+
+    function debounce(fn, wait) {
+      var t;
+      return function() {
+        clearTimeout(t);
+        t = setTimeout(fn, wait);
+      };
+    }
+
+    googletag.cmd.push(function () {
+      slot = googletag
+        .defineSlot("/22908122590,23183077146/od-life-new/slot_2", definedSizes, divIdValue)
+        .addService(googletag.pubads());
+
+      var adUnitPath = slot.getAdUnitPath();
+      var networkId = (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
+
+      renderState.adUnitPath = adUnitPath;
+      renderState.networkId = networkId;
+
+      googletag.pubads().set("page_url", pageUrlValue);
+
+      googletag.pubads().addEventListener("slotRenderEnded", function (e) {
+        if (slot && e.slot === slot) {
+          renderState.lineItemId = e.lineItemId || "";
+          renderState.creativeId = e.creativeId || "";
+          renderState.advertiserId = e.advertiserId || "";
+          renderState.campaignId = e.campaignId || "";
+          renderState.renderedSize = e.size ? formatSizes(e.size) : "N/A";
+          renderState.isEmpty = !!e.isEmpty;
+          updateDebugPanel();
+        }
+      });
+
+      googletag.enableServices();
+      updateDebugPanel();
+    });
+
+    window.addEventListener("load", function() {
+      updateDebugPanel();
+    });
+
+    window.addEventListener("resize", debounce(function() {
+      updateDebugPanel();
+    }, 150));
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Google Ad Manager GPT Test Page</h1>
+
+    <div class="layout">
+      <section class="stage">
+        <div class="stage-header">Ad Slot</div>
+        <div class="stage-body">
+          <div class="slot-box">
+            <div class="slot-label mono">Div ID: gpt-slot-2</div>
+            <div id="gpt-slot-2">GPT slot will render here</div>
+            <script>
+              googletag.cmd.push(function () {
+                googletag.display("gpt-slot-2");
+              });
+            </script>
+          </div>
+        </div>
+      </section>
+
+      <aside class="debug">
+        <div class="debug-header">Debug Panel</div>
+        <div class="debug-body">
+          <div class="row">
+            <span class="label">Network ID</span>
+            <div class="value mono" id="networkId">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Ad unit path</span>
+            <div class="value mono" id="adUnitPath">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">page_url</span>
+            <div class="value mono" id="pageUrl">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Div ID</span>
+            <div class="value mono" id="divId">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Defined sizes</span>
+            <div class="value mono" id="definedSizes">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Requested sizes (current request)</span>
+            <div class="value mono" id="requestedSizes">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Viewport</span>
+            <div class="value mono" id="viewport">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Campaign/Order ID</span>
+            <div class="value mono" id="campaignId">N/A</div>
+            <div class="links" id="campaignLink">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Line item ID</span>
+            <div class="value mono" id="lineItemId">N/A</div>
+            <div class="links" id="lineItemLink">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Creative ID</span>
+            <div class="value mono" id="creativeId">N/A</div>
+            <div class="links" id="creativeLink">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Advertiser ID</span>
+            <div class="value mono" id="advertiserId">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Rendered size</span>
+            <div class="value mono" id="renderedSize">N/A</div>
+          </div>
+
+          <div class="row">
+            <span class="label">Is empty</span>
+            <div class="value mono" id="isEmpty">N/A</div>
+          </div>
+
+          <div class="footnote">
+            DevTools → Network/Console (filter gpt/doubleclick).
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>
