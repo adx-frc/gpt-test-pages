@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GPT Test Page - odessa-life.od.ua slot_2</title>
+  <title>GPT Test Page - odessa-life.od.ua slot_2 (780x250)</title>
   <style>
     :root {
       --bg: #0b1020;
       --panel: #121a33;
-      --panel-2: #182243;
       --text: #e8ecf8;
       --muted: #aab6d3;
-      --accent: #76a7ff;
       --ok: #59d38c;
       --warn: #ffcc66;
-      --bad: #ff7b7b;
-      --border: #2a3968;
     }
 
     * { box-sizing: border-box; }
@@ -73,6 +69,7 @@
         linear-gradient(-45deg, transparent 75%, #f9fbff 75%);
       background-size: 24px 24px;
       background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+      overflow: auto;
     }
 
     .slot-box {
@@ -88,9 +85,9 @@
     }
 
     #gpt-slot-2 {
-      width: 970px;
+      width: 780px;
       height: 250px;
-      max-width: 100%;
+      min-width: 780px;
       min-height: 250px;
       border: 2px dashed #b8c4e6;
       background: #fff;
@@ -100,6 +97,7 @@
       color: #6b7280;
       text-align: center;
       padding: 8px;
+      overflow: hidden;
     }
 
     .debug-body {
@@ -154,7 +152,6 @@
 
     .status-ok { color: var(--ok); }
     .status-warn { color: var(--warn); }
-    .status-bad { color: var(--bad); }
 
     @media (max-width: 1100px) {
       .layout {
@@ -164,12 +161,6 @@
         order: -1;
       }
     }
-
-    @media (max-width: 1020px) {
-      #gpt-slot-2 {
-        width: 100%;
-      }
-    }
   </style>
 
   <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
@@ -177,10 +168,11 @@
     window.googletag = window.googletag || { cmd: [] };
 
     var slot;
-    var definedSizes = [[970, 250]];
-    var mappingRules = null; // no sizeMapping provided
+    var definedSizes = [[780, 250]];
+    var mappingRules = null;
     var pageUrlValue = "https://odessa-life.od.ua/";
     var divIdValue = "gpt-slot-2";
+
     var renderState = {
       adUnitPath: "",
       networkId: "",
@@ -340,7 +332,7 @@
         <div class="stage-body">
           <div class="slot-box">
             <div class="slot-label mono">Div ID: gpt-slot-2</div>
-            <div id="gpt-slot-2">GPT slot will render here</div>
+            <div id="gpt-slot-2">GPT slot will render here (780x250)</div>
             <script>
               googletag.cmd.push(function () {
                 googletag.display("gpt-slot-2");
