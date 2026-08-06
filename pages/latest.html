@@ -3,11 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Google Ad Manager GPT Test Page</title>
+  <title>GPT Test — NoobFeed Home Footer</title>
 
   <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 24px;
@@ -16,12 +20,12 @@
       background: #f3f4f6;
     }
 
-    .container {
-      max-width: 960px;
+    main {
+      max-width: 1100px;
       margin: 0 auto;
     }
 
-    .card {
+    .panel {
       margin-bottom: 20px;
       padding: 20px;
       border: 1px solid #d1d5db;
@@ -35,20 +39,26 @@
       margin-top: 0;
     }
 
-    #div-gpt-ad-3643691560-73 {
-      min-width: 320px;
-      min-height: 50px;
+    code {
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #e5e7eb;
+      overflow-wrap: anywhere;
+    }
+
+    #div-gpt-ad-10000003 {
       display: flex;
+      min-height: 90px;
       align-items: center;
       justify-content: center;
-      margin: 0 auto;
-      background: #f9fafb;
+      margin: 24px auto 0;
       border: 1px dashed #9ca3af;
+      background: #f9fafb;
     }
 
     .debug-grid {
       display: grid;
-      grid-template-columns: minmax(180px, 220px) 1fr;
+      grid-template-columns: minmax(190px, 230px) 1fr;
       gap: 10px 16px;
     }
 
@@ -65,15 +75,25 @@
       color: #1d4ed8;
     }
 
-    code {
-      padding: 2px 5px;
-      border-radius: 4px;
-      background: #e5e7eb;
+    .status-waiting {
+      color: #92400e;
+    }
+
+    .status-filled {
+      color: #166534;
+    }
+
+    .status-empty {
+      color: #991b1b;
     }
 
     @media (max-width: 600px) {
       body {
         padding: 12px;
+      }
+
+      .panel {
+        padding: 16px;
       }
 
       .debug-grid {
@@ -92,9 +112,15 @@
 
     var testPageData = {
       pageUrl: "https://noobfeed.com",
-      divId: "div-gpt-ad-3643691560-73",
-      definedSizes: [[320, 50]],
-      requestedSizes: [[320, 50]],
+      divId: "div-gpt-ad-10000003",
+      definedSizes: [
+        [970, 90],
+        [728, 90],
+        [320, 50],
+        [300, 250],
+        [300, 50]
+      ],
+      requestedSizes: [],
       adUnitPath: "",
       networkId: "",
       campaignId: "",
@@ -105,29 +131,56 @@
       isEmpty: null
     };
 
+    /*
+     * Mirrors the GPT size mapping below.
+     * Rules are ordered from largest minimum viewport to smallest.
+     */
+    var mappingRules2 = [
+      {
+        min: [970, 0],
+        sizes: [[970, 90], [728, 90]]
+      },
+      {
+        min: [728, 0],
+        sizes: [[728, 90]]
+      },
+      {
+        min: [320, 0],
+        sizes: [[320, 50], [300, 250], [300, 50]]
+      },
+      {
+        min: [300, 0],
+        sizes: [[300, 250], [300, 50]]
+      },
+      {
+        min: [0, 0],
+        sizes: []
+      }
+    ];
+
     function formatSizes(sizes) {
       if (!sizes || !sizes.length) {
         return "None";
       }
 
       return sizes.map(function(size) {
-        if (Array.isArray(size)) {
-          return size[0] + "x" + size[1];
-        }
-
-        return String(size);
+        return Array.isArray(size)
+          ? size[0] + "x" + size[1]
+          : String(size);
       }).join(", ");
     }
 
     function setText(id, value) {
       var element = document.getElementById(id);
 
-      if (element) {
-        element.textContent =
-          value === undefined || value === null || value === ""
-            ? "N/A"
-            : String(value);
+      if (!element) {
+        return;
       }
+
+      element.textContent =
+        value === undefined || value === null || value === ""
+          ? "N/A"
+          : String(value);
     }
 
     function renderGamLink(containerId, type, id) {
@@ -151,12 +204,14 @@
       };
 
       var link = document.createElement("a");
+
       link.href =
         "https://admanager.google.com/" +
         encodeURIComponent(testPageData.networkId) +
         "#" +
         routes[type] +
         encodeURIComponent(id);
+
       link.target = "_blank";
       link.rel = "noopener";
       link.textContent = String(id);
@@ -164,22 +219,45 @@
       container.appendChild(link);
     }
 
-    function updateRequestedSizes() {
-      /*
-       * No size mapping is defined, so the currently requested sizes
-       * are the same as the slot's defined sizes.
-       */
-      testPageData.requestedSizes = testPageData.definedSizes.slice();
+    function calculateRequestedSizes() {
+      var viewportWidth = window.innerWidth;
+      var viewportHeight = window.innerHeight;
+      var matchedSizes = [];
 
-      setText(
-        "debug-requested-sizes",
-        formatSizes(testPageData.requestedSizes)
-      );
+      for (var i = 0; i < mappingRules2.length; i += 1) {
+        var rule = mappingRules2[i];
 
-      setText(
-        "debug-viewport",
-        window.innerWidth + "x" + window.innerHeight
-      );
+        if (
+          viewportWidth >= rule.min[0] &&
+          viewportHeight >= rule.min[1]
+        ) {
+          matchedSizes = rule.sizes;
+          break;
+        }
+      }
+
+      testPageData.requestedSizes = matchedSizes;
+    }
+
+    function renderResponseStatus() {
+      var statusElement = document.getElementById("debug-response-status");
+
+      if (!statusElement) {
+        return;
+      }
+
+      statusElement.className = "debug-value";
+
+      if (testPageData.isEmpty === null) {
+        statusElement.textContent = "Awaiting ad response";
+        statusElement.classList.add("status-waiting");
+      } else if (testPageData.isEmpty) {
+        statusElement.textContent = "Empty";
+        statusElement.classList.add("status-empty");
+      } else {
+        statusElement.textContent = "Filled";
+        statusElement.classList.add("status-filled");
+      }
     }
 
     function renderDebugPanel() {
@@ -187,42 +265,49 @@
       setText("debug-ad-unit-path", testPageData.adUnitPath);
       setText("debug-page-url", testPageData.pageUrl);
       setText("debug-div-id", testPageData.divId);
+
       setText(
         "debug-defined-sizes",
         formatSizes(testPageData.definedSizes)
       );
+
       setText(
         "debug-requested-sizes",
         formatSizes(testPageData.requestedSizes)
       );
+
       setText(
         "debug-viewport",
         window.innerWidth + "x" + window.innerHeight
       );
+
       setText("debug-advertiser-id", testPageData.advertiserId);
       setText("debug-rendered-size", testPageData.renderedSize);
-      setText(
-        "debug-is-empty",
-        testPageData.isEmpty === null
-          ? "Awaiting response"
-          : String(testPageData.isEmpty)
-      );
 
       renderGamLink(
         "debug-campaign-id",
         "campaign",
         testPageData.campaignId
       );
+
       renderGamLink(
         "debug-line-item-id",
         "lineItem",
         testPageData.lineItemId
       );
+
       renderGamLink(
         "debug-creative-id",
         "creative",
         testPageData.creativeId
       );
+
+      renderResponseStatus();
+    }
+
+    function updateViewportDebugInfo() {
+      calculateRequestedSizes();
+      renderDebugPanel();
     }
 
     var resizeTimer;
@@ -231,21 +316,34 @@
       window.clearTimeout(resizeTimer);
 
       resizeTimer = window.setTimeout(function() {
-        updateRequestedSizes();
-        renderDebugPanel();
+        updateViewportDebugInfo();
       }, 150);
     });
 
     window.addEventListener("DOMContentLoaded", function() {
-      updateRequestedSizes();
-      renderDebugPanel();
+      updateViewportDebugInfo();
     });
 
     googletag.cmd.push(function() {
+      var mapping2 = googletag
+        .sizeMapping()
+        .addSize([970, 0], [[970, 90], [728, 90]])
+        .addSize([728, 0], [[728, 90]])
+        .addSize([320, 0], [[320, 50], [300, 250], [300, 50]])
+        .addSize([300, 0], [[300, 250], [300, 50]])
+        .addSize([0, 0], [])
+        .build();
+
       var slot = googletag.defineSlot(
-        "/22908122590,21824159157/noobfeed.com/mob-home-top1",
-        [[320, 50]],
-        "div-gpt-ad-3643691560-73"
+        "/22908122590,21824159157/noobfeed.com/home-footer",
+        [
+          [970, 90],
+          [728, 90],
+          [320, 50],
+          [300, 250],
+          [300, 50]
+        ],
+        "div-gpt-ad-10000003"
       );
 
       if (!slot) {
@@ -253,7 +351,9 @@
         return;
       }
 
-      slot.addService(googletag.pubads());
+      slot
+        .defineSizeMapping(mapping2)
+        .addService(googletag.pubads());
 
       var adUnitPath = slot.getAdUnitPath();
       var networkId =
@@ -295,31 +395,34 @@
       );
 
       googletag.enableServices();
+
+      calculateRequestedSizes();
       renderDebugPanel();
     });
   </script>
 </head>
 
 <body>
-  <main class="container">
-    <section class="card">
+  <main>
+    <section class="panel">
       <h1>Google Ad Manager GPT Test Page</h1>
+
       <p>
         Ad unit:
-        <code>/22908122590,21824159157/noobfeed.com/mob-home-top1</code>
+        <code>/22908122590,21824159157/noobfeed.com/home-footer</code>
       </p>
 
-      <div id="div-gpt-ad-3643691560-73"></div>
+      <div id="div-gpt-ad-10000003"></div>
 
       <script>
         googletag.cmd.push(function() {
-          googletag.display("div-gpt-ad-3643691560-73");
+          googletag.display("div-gpt-ad-10000003");
         });
       </script>
     </section>
 
-    <section class="card" aria-labelledby="debug-heading">
-      <h2 id="debug-heading">GPT Debug Panel</h2>
+    <section class="panel" aria-labelledby="debug-title">
+      <h2 id="debug-title">GPT Debug Panel</h2>
 
       <div class="debug-grid">
         <div class="debug-label">Network ID</div>
@@ -343,6 +446,14 @@
         <div class="debug-label">Viewport</div>
         <div class="debug-value" id="debug-viewport">N/A</div>
 
+        <div class="debug-label">Response status</div>
+        <div
+          class="debug-value status-waiting"
+          id="debug-response-status"
+        >
+          Awaiting ad response
+        </div>
+
         <div class="debug-label">Campaign/Order ID</div>
         <div class="debug-value" id="debug-campaign-id">N/A</div>
 
@@ -357,11 +468,6 @@
 
         <div class="debug-label">Rendered size</div>
         <div class="debug-value" id="debug-rendered-size">N/A</div>
-
-        <div class="debug-label">Empty response</div>
-        <div class="debug-value" id="debug-is-empty">
-          Awaiting response
-        </div>
 
         <div class="debug-label">Additional debugging</div>
         <div class="debug-value">
