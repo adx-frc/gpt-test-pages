@@ -1,43 +1,374 @@
-
 <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google Ad Manager GPT Test Page</title>
 
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ad Test Page</title>
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 
-    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
-<script>
-  window.googletag = window.googletag || {cmd: []};
-  googletag.cmd.push(function() {
-    googletag.defineSlot('/22908122590,23338557499/surl.lu/hor_display1', [[1080, 260], [728, 90]], 'div-gpt-ad-1777562592509-0').addService(googletag.pubads());
-googletag.defineSlot('/22908122590,23338557499/surl.lu/m_slot1', [[320, 50], [300, 250]], 'div-gpt-ad-1777562842859-0').addService(googletag.pubads());
-    googletag.pubads().enableSingleRequest();
-    googletag.pubads().collapseEmptyDivs();
-    googletag.enableServices();
-    googletag.pubads().set("page_url", "https://surl.lu");
-  });
-</script>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #1f2937;
+      background: #f3f4f6;
+    }
 
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
 
-    
-  </head>
-  <body>
-desktop:
-    <!-- /22908122590,23338557499/surl.lu/hor_display1 -->
-<div id='div-gpt-ad-1777562592509-0' style='min-width: 728px; min-height: 90px;'>
+    .card {
+      margin-bottom: 20px;
+      padding: 20px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    h1,
+    h2 {
+      margin-top: 0;
+    }
+
+    #div-gpt-ad-3643691560-73 {
+      min-width: 320px;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      background: #f9fafb;
+      border: 1px dashed #9ca3af;
+    }
+
+    .debug-grid {
+      display: grid;
+      grid-template-columns: minmax(180px, 220px) 1fr;
+      gap: 10px 16px;
+    }
+
+    .debug-label {
+      font-weight: 700;
+    }
+
+    .debug-value {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    a {
+      color: #1d4ed8;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #e5e7eb;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+
+      .debug-grid {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .debug-value {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+
   <script>
-    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1777562592509-0'); });
-  </script>
-</div>
-  </body>
-mobile:
-<!-- /22908122590,23338557499/surl.lu/m_slot1 -->
-<div id='div-gpt-ad-1777562842859-0' style='min-width: 300px; min-height: 50px;'>
-  <script>
-    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1777562842859-0'); });
-  </script>
-</div>
+    window.googletag = window.googletag || { cmd: [] };
 
+    var testPageData = {
+      pageUrl: "https://noobfeed.com",
+      divId: "div-gpt-ad-3643691560-73",
+      definedSizes: [[320, 50]],
+      requestedSizes: [[320, 50]],
+      adUnitPath: "",
+      networkId: "",
+      campaignId: "",
+      lineItemId: "",
+      creativeId: "",
+      advertiserId: "",
+      renderedSize: "",
+      isEmpty: null
+    };
+
+    function formatSizes(sizes) {
+      if (!sizes || !sizes.length) {
+        return "None";
+      }
+
+      return sizes.map(function(size) {
+        if (Array.isArray(size)) {
+          return size[0] + "x" + size[1];
+        }
+
+        return String(size);
+      }).join(", ");
+    }
+
+    function setText(id, value) {
+      var element = document.getElementById(id);
+
+      if (element) {
+        element.textContent =
+          value === undefined || value === null || value === ""
+            ? "N/A"
+            : String(value);
+      }
+    }
+
+    function renderGamLink(containerId, type, id) {
+      var container = document.getElementById(containerId);
+
+      if (!container) {
+        return;
+      }
+
+      container.textContent = "";
+
+      if (!testPageData.networkId || !id) {
+        container.textContent = "N/A";
+        return;
+      }
+
+      var routes = {
+        lineItem: "delivery/line_item/detail/",
+        creative: "delivery/creative/detail/",
+        campaign: "delivery/order/detail/"
+      };
+
+      var link = document.createElement("a");
+      link.href =
+        "https://admanager.google.com/" +
+        encodeURIComponent(testPageData.networkId) +
+        "#" +
+        routes[type] +
+        encodeURIComponent(id);
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = String(id);
+
+      container.appendChild(link);
+    }
+
+    function updateRequestedSizes() {
+      /*
+       * No size mapping is defined, so the currently requested sizes
+       * are the same as the slot's defined sizes.
+       */
+      testPageData.requestedSizes = testPageData.definedSizes.slice();
+
+      setText(
+        "debug-requested-sizes",
+        formatSizes(testPageData.requestedSizes)
+      );
+
+      setText(
+        "debug-viewport",
+        window.innerWidth + "x" + window.innerHeight
+      );
+    }
+
+    function renderDebugPanel() {
+      setText("debug-network-id", testPageData.networkId);
+      setText("debug-ad-unit-path", testPageData.adUnitPath);
+      setText("debug-page-url", testPageData.pageUrl);
+      setText("debug-div-id", testPageData.divId);
+      setText(
+        "debug-defined-sizes",
+        formatSizes(testPageData.definedSizes)
+      );
+      setText(
+        "debug-requested-sizes",
+        formatSizes(testPageData.requestedSizes)
+      );
+      setText(
+        "debug-viewport",
+        window.innerWidth + "x" + window.innerHeight
+      );
+      setText("debug-advertiser-id", testPageData.advertiserId);
+      setText("debug-rendered-size", testPageData.renderedSize);
+      setText(
+        "debug-is-empty",
+        testPageData.isEmpty === null
+          ? "Awaiting response"
+          : String(testPageData.isEmpty)
+      );
+
+      renderGamLink(
+        "debug-campaign-id",
+        "campaign",
+        testPageData.campaignId
+      );
+      renderGamLink(
+        "debug-line-item-id",
+        "lineItem",
+        testPageData.lineItemId
+      );
+      renderGamLink(
+        "debug-creative-id",
+        "creative",
+        testPageData.creativeId
+      );
+    }
+
+    var resizeTimer;
+
+    window.addEventListener("resize", function() {
+      window.clearTimeout(resizeTimer);
+
+      resizeTimer = window.setTimeout(function() {
+        updateRequestedSizes();
+        renderDebugPanel();
+      }, 150);
+    });
+
+    window.addEventListener("DOMContentLoaded", function() {
+      updateRequestedSizes();
+      renderDebugPanel();
+    });
+
+    googletag.cmd.push(function() {
+      var slot = googletag.defineSlot(
+        "/22908122590,21824159157/noobfeed.com/mob-home-top1",
+        [[320, 50]],
+        "div-gpt-ad-3643691560-73"
+      );
+
+      if (!slot) {
+        console.error("GPT slot could not be defined.");
+        return;
+      }
+
+      slot.addService(googletag.pubads());
+
+      var adUnitPath = slot.getAdUnitPath();
+      var networkId =
+        (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
+
+      testPageData.adUnitPath = adUnitPath;
+      testPageData.networkId = networkId;
+
+      googletag.pubads().set(
+        "page_url",
+        "https://noobfeed.com"
+      );
+
+      googletag.pubads().enableSingleRequest();
+      googletag.pubads().collapseEmptyDivs();
+
+      googletag.pubads().addEventListener(
+        "slotRenderEnded",
+        function(e) {
+          if (e.slot !== slot) {
+            return;
+          }
+
+          testPageData.lineItemId = e.lineItemId || "";
+          testPageData.creativeId = e.creativeId || "";
+          testPageData.advertiserId = e.advertiserId || "";
+          testPageData.campaignId = e.campaignId || "";
+          testPageData.isEmpty = Boolean(e.isEmpty);
+
+          if (Array.isArray(e.size)) {
+            testPageData.renderedSize =
+              e.size[0] + "x" + e.size[1];
+          } else {
+            testPageData.renderedSize = e.size || "";
+          }
+
+          renderDebugPanel();
+        }
+      );
+
+      googletag.enableServices();
+      renderDebugPanel();
+    });
+  </script>
+</head>
+
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Google Ad Manager GPT Test Page</h1>
+      <p>
+        Ad unit:
+        <code>/22908122590,21824159157/noobfeed.com/mob-home-top1</code>
+      </p>
+
+      <div id="div-gpt-ad-3643691560-73"></div>
+
+      <script>
+        googletag.cmd.push(function() {
+          googletag.display("div-gpt-ad-3643691560-73");
+        });
+      </script>
+    </section>
+
+    <section class="card" aria-labelledby="debug-heading">
+      <h2 id="debug-heading">GPT Debug Panel</h2>
+
+      <div class="debug-grid">
+        <div class="debug-label">Network ID</div>
+        <div class="debug-value" id="debug-network-id">N/A</div>
+
+        <div class="debug-label">Ad unit path</div>
+        <div class="debug-value" id="debug-ad-unit-path">N/A</div>
+
+        <div class="debug-label">page_url</div>
+        <div class="debug-value" id="debug-page-url">N/A</div>
+
+        <div class="debug-label">Div ID</div>
+        <div class="debug-value" id="debug-div-id">N/A</div>
+
+        <div class="debug-label">Defined sizes</div>
+        <div class="debug-value" id="debug-defined-sizes">N/A</div>
+
+        <div class="debug-label">Requested sizes (current request)</div>
+        <div class="debug-value" id="debug-requested-sizes">N/A</div>
+
+        <div class="debug-label">Viewport</div>
+        <div class="debug-value" id="debug-viewport">N/A</div>
+
+        <div class="debug-label">Campaign/Order ID</div>
+        <div class="debug-value" id="debug-campaign-id">N/A</div>
+
+        <div class="debug-label">Line item ID</div>
+        <div class="debug-value" id="debug-line-item-id">N/A</div>
+
+        <div class="debug-label">Creative ID</div>
+        <div class="debug-value" id="debug-creative-id">N/A</div>
+
+        <div class="debug-label">Advertiser ID</div>
+        <div class="debug-value" id="debug-advertiser-id">N/A</div>
+
+        <div class="debug-label">Rendered size</div>
+        <div class="debug-value" id="debug-rendered-size">N/A</div>
+
+        <div class="debug-label">Empty response</div>
+        <div class="debug-value" id="debug-is-empty">
+          Awaiting response
+        </div>
+
+        <div class="debug-label">Additional debugging</div>
+        <div class="debug-value">
+          DevTools → Network/Console (filter gpt/doubleclick).
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
 </html>
