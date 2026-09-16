@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Google Ad Manager GPT Test - PollyPolish</title>
+
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .ad-wrapper {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    #div-gpt-ad-1789373710376-0 {
+      min-width: 250px;
+      min-height: 50px;
+    }
+
+    #debug-panel {
+      background: #111;
+      color: #eee;
+      padding: 18px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    #debug-panel h2 {
+      margin-top: 0;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+    }
+
+    .debug-row {
+      margin: 5px 0;
+    }
+
+    .debug-label {
+      color: #aaa;
+    }
+
+    #debug-panel a {
+      color: #6db7ff;
+    }
+  </style>
+
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+
+    var slot = null;
+
+    var debugData = {
+      networkId: "",
+      adUnitPath: "",
+      pageUrl: "https://pollypolish.com",
+      divId: "div-gpt-ad-1789373710376-0",
+      definedSizes: [
+        [670, 280],
+        [320, 50],
+        [468, 60],
+        [250, 250],
+        [300, 50],
+        [320, 100],
+        [600, 300],
+        [600, 120],
+        [300, 120],
+        [300, 75],
+        [320, 120],
+        [580, 400],
+        [300, 100],
+        [320, 250],
+        [680, 120],
+        [680, 90]
+      ],
+      lineItemId: null,
+      creativeId: null,
+      campaignId: null,
+      advertiserId: null,
+      renderedSize: null,
+      isEmpty: null
+    };
+
+    function formatSizes(sizes) {
+      if (!sizes || !sizes.length) {
+        return "None";
+      }
+
+      return sizes.map(function(size) {
+        if (Array.isArray(size)) {
+          return size[0] + "x" + size[1];
+        }
+
+        return String(size);
+      }).join(", ");
+    }
+
+    function makeGamLink(type, id) {
+      if (!debugData.networkId || id === null || id === undefined || id === "") {
+        return "N/A";
+      }
+
+      var base = "https://admanager.google.com/" +
+        encodeURIComponent(debugData.networkId) +
+        "#delivery/";
+
+      var url = "";
+
+      if (type === "line_item") {
+        url = base + "line_item/detail/" + encodeURIComponent(id);
+      } else if (type === "creative") {
+        url = base + "creative/detail/" + encodeURIComponent(id);
+      } else if (type === "order") {
+        url = base + "order/detail/" + encodeURIComponent(id);
+      } else {
+        return "N/A";
+      }
+
+      return '<a href="' + url +
+        '" target="_blank" rel="noopener">' +
+        String(id) +
+        "</a>";
+    }
+
+    function renderDebugPanel() {
+      var panel = document.getElementById("debug-panel");
+
+      if (!panel) {
+        return;
+      }
+
+      /*
+       * No sizeMapping is configured for this slot.
+       * Therefore requested sizes = defined sizes.
+       */
+      var requestedSizes = debugData.definedSizes;
+
+      panel.innerHTML =
+        "<h2>GPT Debug Panel</h2>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Network ID:</span> ' +
+          (debugData.networkId || "N/A") +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Ad unit path:</span> ' +
+          (debugData.adUnitPath || "N/A") +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">page_url:</span> ' +
+          debugData.pageUrl +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Div ID:</span> ' +
+          debugData.divId +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Defined sizes:</span> ' +
+          formatSizes(debugData.definedSizes) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Requested sizes (current request):</span> ' +
+          formatSizes(requestedSizes) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Viewport:</span> ' +
+          window.innerWidth + "x" + window.innerHeight +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Campaign/Order ID:</span> ' +
+          makeGamLink("order", debugData.campaignId) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Line item ID:</span> ' +
+          makeGamLink("line_item", debugData.lineItemId) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Creative ID:</span> ' +
+          makeGamLink("creative", debugData.creativeId) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Advertiser ID:</span> ' +
+          (
+            debugData.advertiserId !== null &&
+            debugData.advertiserId !== undefined &&
+            debugData.advertiserId !== ""
+              ? debugData.advertiserId
+              : "N/A"
+          ) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Rendered size:</span> ' +
+          (
+            debugData.renderedSize
+              ? formatSizes([debugData.renderedSize])
+              : "N/A"
+          ) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Empty response:</span> ' +
+          (
+            debugData.isEmpty === null
+              ? "N/A"
+              : String(debugData.isEmpty)
+          ) +
+        "</div>" +
+
+        "<br>" +
+
+        '<div class="debug-row">' +
+          "DevTools → Network/Console (filter gpt/doubleclick)." +
+        "</div>";
+    }
+
+    var resizeTimer = null;
+
+    window.addEventListener("resize", function() {
+      clearTimeout(resizeTimer);
+
+      resizeTimer = setTimeout(function() {
+        renderDebugPanel();
+      }, 150);
+    });
+
+    window.addEventListener("DOMContentLoaded", function() {
+      renderDebugPanel();
+    });
+
+    googletag.cmd.push(function() {
+      slot = googletag.defineSlot(
+        "/23075920552/pollypolish.com/in-content1",
+        [
+          [670, 280],
+          [320, 50],
+          [468, 60],
+          [250, 250],
+          [300, 50],
+          [320, 100],
+          [600, 300],
+          [600, 120],
+          [300, 120],
+          [300, 75],
+          [320, 120],
+          [580, 400],
+          [300, 100],
+          [320, 250],
+          [680, 120],
+          [680, 90]
+        ],
+        "div-gpt-ad-1789373710376-0"
+      ).addService(googletag.pubads());
+
+      /*
+       * Extract these values from the actual GPT slot rather than
+       * duplicating them in the debug panel.
+       */
+      var adUnitPath = slot.getAdUnitPath();
+      var networkId = (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
+
+      debugData.adUnitPath = adUnitPath;
+      debugData.networkId = networkId;
+
+      googletag.pubads().set(
+        "page_url",
+        "https://pollypolish.com"
+      );
+
+      googletag.pubads().enableSingleRequest();
+      googletag.pubads().collapseEmptyDivs();
+
+      googletag.pubads().addEventListener(
+        "slotRenderEnded",
+        function(e) {
+          if (e.slot !== slot) {
+            return;
+          }
+
+          debugData.lineItemId =
+            e.lineItemId !== undefined ? e.lineItemId : null;
+
+          debugData.creativeId =
+            e.creativeId !== undefined ? e.creativeId : null;
+
+          debugData.advertiserId =
+            e.advertiserId !== undefined ? e.advertiserId : null;
+
+          debugData.campaignId =
+            e.campaignId !== undefined ? e.campaignId : null;
+
+          debugData.renderedSize =
+            e.size !== undefined ? e.size : null;
+
+          debugData.isEmpty =
+            e.isEmpty !== undefined ? e.isEmpty : null;
+
+          renderDebugPanel();
+        }
+      );
+
+      googletag.enableServices();
+
+      renderDebugPanel();
+    });
+  </script>
+</head>
+
+<body>
+
+  <h1>Google Ad Manager GPT Test</h1>
+
+  <div class="ad-wrapper">
+    <!-- /23075920552/pollypolish.com/in-content1 -->
+    <div
+      id="div-gpt-ad-1789373710376-0"
+      style="min-width: 250px; min-height: 50px;">
+    </div>
+
+    <script>
+      googletag.cmd.push(function() {
+        googletag.display("div-gpt-ad-1789373710376-0");
+      });
+    </script>
+  </div>
+
+  <div id="debug-panel">
+    Loading GPT debug information...
+  </div>
+
+</body>
+</html>
