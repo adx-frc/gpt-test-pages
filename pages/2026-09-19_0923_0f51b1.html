@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Google Ad Manager GPT Test - pollypolish.com</title>
+
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .ad-container {
+      margin: 24px 0;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid #ddd;
+      overflow: auto;
+    }
+
+    #div-gpt-ad-1789802491063-0 {
+      min-width: 250px;
+      min-height: 50px;
+    }
+
+    .debug-panel {
+      margin-top: 24px;
+      padding: 16px;
+      background: #111827;
+      color: #e5e7eb;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .debug-panel h2 {
+      margin: 0 0 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .debug-row {
+      margin: 5px 0;
+    }
+
+    .debug-label {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+
+    .debug-panel a {
+      color: #67e8f9;
+    }
+  </style>
+
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+
+    var slot;
+    var networkId = "";
+    var adUnitPath = "";
+
+    var definedSizes = [
+      [300, 50],
+      [320, 100],
+      [600, 300],
+      [468, 60],
+      [300, 75],
+      [680, 90],
+      [580, 400],
+      [680, 120],
+      [320, 250],
+      [300, 100],
+      [600, 120],
+      [320, 50],
+      [320, 120],
+      [250, 250],
+      [670, 280],
+      [300, 120]
+    ];
+
+    // No size mapping is configured, so requested sizes are the defined sizes.
+    var requestedSizes = definedSizes.slice();
+
+    var responseData = {
+      campaignId: null,
+      lineItemId: null,
+      creativeId: null,
+      advertiserId: null,
+      renderedSize: null,
+      isEmpty: null
+    };
+
+    function formatSizes(sizes) {
+      if (!sizes || !sizes.length) {
+        return "None";
+      }
+
+      return sizes.map(function(size) {
+        if (Array.isArray(size)) {
+          return size[0] + "x" + size[1];
+        }
+
+        if (size && typeof size.getWidth === "function") {
+          return size.getWidth() + "x" + size.getHeight();
+        }
+
+        return String(size);
+      }).join(", ");
+    }
+
+    function createGamLink(type, id) {
+      if (!networkId || !id) {
+        return "N/A";
+      }
+
+      var path;
+
+      if (type === "lineItem") {
+        path = "delivery/line_item/detail/" + encodeURIComponent(id);
+      } else if (type === "creative") {
+        path = "delivery/creative/detail/" + encodeURIComponent(id);
+      } else if (type === "order") {
+        path = "delivery/order/detail/" + encodeURIComponent(id);
+      } else {
+        return "N/A";
+      }
+
+      var url =
+        "https://admanager.google.com/" +
+        encodeURIComponent(networkId) +
+        "#" +
+        path;
+
+      return '<a href="' + url +
+        '" target="_blank" rel="noopener">' +
+        String(id) +
+        "</a>";
+    }
+
+    function updateDebugPanel() {
+      var panel = document.getElementById("debug-panel");
+
+      if (!panel) {
+        return;
+      }
+
+      var viewport =
+        window.innerWidth + "x" + window.innerHeight;
+
+      var renderedSize = responseData.renderedSize
+        ? formatSizes([responseData.renderedSize])
+        : "N/A";
+
+      var emptyStatus =
+        responseData.isEmpty === null
+          ? "N/A"
+          : String(responseData.isEmpty);
+
+      panel.innerHTML =
+        "<h2>GPT Debug Panel</h2>" +
+
+        '<div class="debug-row"><span class="debug-label">Network ID:</span> ' +
+        (networkId || "N/A") +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Ad unit path:</span> ' +
+        (adUnitPath || "N/A") +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">page_url:</span> ' +
+        "https://pollypolish.com" +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Div ID:</span> ' +
+        "div-gpt-ad-1789802491063-0" +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Defined sizes:</span> ' +
+        formatSizes(definedSizes) +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Requested sizes (current request):</span> ' +
+        formatSizes(requestedSizes) +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Viewport:</span> ' +
+        viewport +
+        "</div>" +
+
+        "<hr>" +
+
+        '<div class="debug-row"><span class="debug-label">Campaign/Order ID:</span> ' +
+        createGamLink("order", responseData.campaignId) +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Line item ID:</span> ' +
+        createGamLink("lineItem", responseData.lineItemId) +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Creative ID:</span> ' +
+        createGamLink("creative", responseData.creativeId) +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Advertiser ID:</span> ' +
+        (responseData.advertiserId || "N/A") +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Rendered size:</span> ' +
+        renderedSize +
+        "</div>" +
+
+        '<div class="debug-row"><span class="debug-label">Empty response:</span> ' +
+        emptyStatus +
+        "</div>" +
+
+        "<hr>" +
+
+        '<div class="debug-row">DevTools → Network/Console (filter gpt/doubleclick).</div>';
+    }
+
+    function updateRequestedSizes() {
+      // No sizeMapping exists on this slot.
+      // Per test-page rules, requested sizes equal defined sizes.
+      requestedSizes = definedSizes.slice();
+      updateDebugPanel();
+    }
+
+    var resizeTimer;
+
+    window.addEventListener("resize", function() {
+      clearTimeout(resizeTimer);
+
+      resizeTimer = setTimeout(function() {
+        updateRequestedSizes();
+      }, 150);
+    });
+
+    googletag.cmd.push(function() {
+      slot = googletag.defineSlot(
+        "/23075920552/pollypolish.com/in-content1",
+        definedSizes,
+        "div-gpt-ad-1789802491063-0"
+      );
+
+      if (slot) {
+        slot.addService(googletag.pubads());
+
+        // Extract these from the actual GPT slot at runtime.
+        adUnitPath = slot.getAdUnitPath();
+
+        networkId =
+          (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
+      }
+
+      googletag.pubads().set(
+        "page_url",
+        "https://pollypolish.com"
+      );
+
+      googletag.pubads().enableSingleRequest();
+
+      googletag.pubads().addEventListener(
+        "slotRenderEnded",
+        function(e) {
+          if (!slot || e.slot !== slot) {
+            return;
+          }
+
+          responseData.lineItemId =
+            e.lineItemId != null ? e.lineItemId : null;
+
+          responseData.creativeId =
+            e.creativeId != null ? e.creativeId : null;
+
+          responseData.advertiserId =
+            e.advertiserId != null ? e.advertiserId : null;
+
+          responseData.campaignId =
+            e.campaignId != null ? e.campaignId : null;
+
+          responseData.renderedSize =
+            e.size != null ? e.size : null;
+
+          responseData.isEmpty =
+            typeof e.isEmpty === "boolean"
+              ? e.isEmpty
+              : null;
+
+          updateDebugPanel();
+        }
+      );
+
+      googletag.enableServices();
+
+      updateRequestedSizes();
+    });
+
+    window.addEventListener("DOMContentLoaded", function() {
+      updateRequestedSizes();
+    });
+  </script>
+</head>
+
+<body>
+  <h1>Google Ad Manager GPT Test Page</h1>
+
+  <div class="ad-container">
+    <!-- /23075920552/pollypolish.com/in-content1 -->
+    <div
+      id="div-gpt-ad-1789802491063-0"
+      style="min-width: 250px; min-height: 50px;"
+    ></div>
+
+    <script>
+      googletag.cmd.push(function() {
+        googletag.display("div-gpt-ad-1789802491063-0");
+      });
+    </script>
+  </div>
+
+  <div id="debug-panel" class="debug-panel">
+    Loading GPT diagnostics...
+  </div>
+</body>
+</html>
