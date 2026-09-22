@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Google Ad Manager GPT Test - noobfeed.com</title>
+
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 24px;
+      color: #222;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    #ad-container {
+      margin-bottom: 24px;
+    }
+
+    #div-gpt-ad-1790088387868-0 {
+      min-width: 300px;
+      min-height: 250px;
+    }
+
+    #gpt-debug-panel {
+      max-width: 900px;
+      padding: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    #gpt-debug-panel h2 {
+      margin-top: 0;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+    }
+
+    .debug-row {
+      margin: 4px 0;
+    }
+
+    .debug-label {
+      font-weight: bold;
+    }
+
+    #gpt-debug-panel a {
+      color: #0066cc;
+    }
+  </style>
+
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+
+    var slot = null;
+    var adUnitPath = "";
+    var networkId = "";
+
+    var divId = "div-gpt-ad-1790088387868-0";
+    var pageUrl = "https://noobfeed.com";
+
+    var definedSizes = [
+      [300, 250]
+    ];
+
+    /*
+      No sizeMapping is configured for this slot.
+      Therefore requested sizes = defined sizes.
+    */
+    var mappingRules = null;
+
+    var responseData = {
+      campaignId: null,
+      lineItemId: null,
+      creativeId: null,
+      advertiserId: null,
+      renderedSize: null,
+      isEmpty: null
+    };
+
+    function formatSizes(sizes) {
+      if (!sizes || sizes.length === 0) {
+        return "None";
+      }
+
+      return sizes.map(function(size) {
+        if (Array.isArray(size)) {
+          return size[0] + "x" + size[1];
+        }
+
+        return String(size);
+      }).join(", ");
+    }
+
+    function getRequestedSizes() {
+      /*
+        Required behavior:
+        If there is no sizeMapping, the current requested sizes
+        are the same as the slot's defined sizes.
+      */
+      if (!mappingRules) {
+        return definedSizes;
+      }
+
+      var vw = window.innerWidth || document.documentElement.clientWidth || 0;
+      var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+
+      for (var i = 0; i < mappingRules.length; i++) {
+        var rule = mappingRules[i];
+
+        if (
+          vw >= rule.min[0] &&
+          vh >= rule.min[1]
+        ) {
+          return rule.sizes;
+        }
+      }
+
+      return [];
+    }
+
+    function renderLink(id, type) {
+      if (
+        !networkId ||
+        id === null ||
+        typeof id === "undefined" ||
+        id === ""
+      ) {
+        return "N/A";
+      }
+
+      var url;
+
+      if (type === "lineItem") {
+        url =
+          "https://admanager.google.com/" +
+          networkId +
+          "#delivery/line_item/detail/" +
+          id;
+      } else if (type === "creative") {
+        url =
+          "https://admanager.google.com/" +
+          networkId +
+          "#delivery/creative/detail/" +
+          id;
+      } else if (type === "order") {
+        url =
+          "https://admanager.google.com/" +
+          networkId +
+          "#delivery/order/detail/" +
+          id;
+      } else {
+        return String(id);
+      }
+
+      return (
+        '<a href="' +
+        url +
+        '" target="_blank" rel="noopener">' +
+        id +
+        "</a>"
+      );
+    }
+
+    function updateDebugPanel() {
+      var panel = document.getElementById("gpt-debug-panel");
+
+      if (!panel) {
+        return;
+      }
+
+      var vw = window.innerWidth || document.documentElement.clientWidth || 0;
+      var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+
+      var requestedSizes = getRequestedSizes();
+
+      panel.innerHTML =
+        "<h2>GPT Debug Panel</h2>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Network ID:</span> ' +
+          (networkId || "N/A") +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Ad unit path:</span> ' +
+          (adUnitPath || "N/A") +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">page_url:</span> ' +
+          pageUrl +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Div ID:</span> ' +
+          divId +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Defined sizes:</span> ' +
+          formatSizes(definedSizes) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Requested sizes (current request):</span> ' +
+          formatSizes(requestedSizes) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Viewport:</span> ' +
+          vw +
+          "x" +
+          vh +
+        "</div>" +
+
+        "<hr>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Campaign/Order ID:</span> ' +
+          renderLink(responseData.campaignId, "order") +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Line item ID:</span> ' +
+          renderLink(responseData.lineItemId, "lineItem") +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Creative ID:</span> ' +
+          renderLink(responseData.creativeId, "creative") +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Advertiser ID:</span> ' +
+          (
+            responseData.advertiserId !== null &&
+            typeof responseData.advertiserId !== "undefined"
+              ? responseData.advertiserId
+              : "N/A"
+          ) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Rendered size:</span> ' +
+          (
+            responseData.renderedSize
+              ? formatSizes([responseData.renderedSize])
+              : "N/A"
+          ) +
+        "</div>" +
+
+        '<div class="debug-row">' +
+          '<span class="debug-label">Empty:</span> ' +
+          (
+            responseData.isEmpty === null
+              ? "N/A"
+              : String(responseData.isEmpty)
+          ) +
+        "</div>" +
+
+        "<hr>" +
+
+        '<div class="debug-row">' +
+          "DevTools → Network/Console (filter gpt/doubleclick)." +
+        "</div>";
+    }
+
+    var resizeTimer;
+
+    window.addEventListener("resize", function() {
+      clearTimeout(resizeTimer);
+
+      resizeTimer = setTimeout(function() {
+        updateDebugPanel();
+      }, 150);
+    });
+
+    googletag.cmd.push(function() {
+      slot = googletag
+        .defineSlot(
+          "/22908122590/noobfeed.com/test",
+          [300, 250],
+          divId
+        )
+        .addService(googletag.pubads());
+
+      /*
+        Extract these values from the actual GPT slot rather than
+        duplicating them from the supplied tag.
+      */
+      adUnitPath = slot.getAdUnitPath();
+      networkId =
+        (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
+
+      googletag.pubads().set(
+        "page_url",
+        "https://noobfeed.com"
+      );
+
+      googletag.pubads().enableSingleRequest();
+
+      googletag.pubads().addEventListener(
+        "slotRenderEnded",
+        function(e) {
+          if (e.slot !== slot) {
+            return;
+          }
+
+          responseData.lineItemId =
+            typeof e.lineItemId !== "undefined"
+              ? e.lineItemId
+              : null;
+
+          responseData.creativeId =
+            typeof e.creativeId !== "undefined"
+              ? e.creativeId
+              : null;
+
+          responseData.advertiserId =
+            typeof e.advertiserId !== "undefined"
+              ? e.advertiserId
+              : null;
+
+          responseData.campaignId =
+            typeof e.campaignId !== "undefined"
+              ? e.campaignId
+              : null;
+
+          responseData.renderedSize =
+            typeof e.size !== "undefined"
+              ? e.size
+              : null;
+
+          responseData.isEmpty =
+            typeof e.isEmpty !== "undefined"
+              ? e.isEmpty
+              : null;
+
+          updateDebugPanel();
+        }
+      );
+
+      googletag.enableServices();
+
+      updateDebugPanel();
+    });
+
+    window.addEventListener("load", function() {
+      updateDebugPanel();
+    });
+  </script>
+</head>
+
+<body>
+  <h1>Google Ad Manager GPT Test Page</h1>
+
+  <div id="ad-container">
+    <!-- /22908122590/noobfeed.com/test -->
+    <div
+      id="div-gpt-ad-1790088387868-0"
+      style="min-width: 300px; min-height: 250px;"
+    ></div>
+
+    <script>
+      googletag.cmd.push(function() {
+        googletag.display("div-gpt-ad-1790088387868-0");
+      });
+    </script>
+  </div>
+
+  <div id="gpt-debug-panel">
+    Loading GPT debug information...
+  </div>
+</body>
+</html>
