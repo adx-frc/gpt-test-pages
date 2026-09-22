@@ -1,111 +1,245 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="uk">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GAM GPT Test - militarnyi.com all-news-ic1</title>
+  <title>GAM GPT Test — Militarnyi / all-news-ic1</title>
 
   <style>
     :root {
-      color-scheme: light dark;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg: #f4f1e8;
+      --paper: #fffdf7;
+      --ink: #232323;
+      --muted: #6a6a6a;
+      --line: #d9d3c6;
+      --panel: #101418;
+      --panel-ink: #e8eef2;
+      --panel-muted: #9fb0bb;
+      --accent: #305f72;
     }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
-      padding: 24px;
-      background: #f5f5f5;
-      color: #111;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.72;
     }
-    h1, h2, h3 {
-      margin-top: 0;
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: var(--paper);
     }
-    .wrap {
-      max-width: 1100px;
+
+    .header-inner,
+    .page-shell {
+      width: min(1440px, calc(100% - 48px));
       margin: 0 auto;
     }
-    .card {
-      background: #fff;
-      border: 1px solid #d8d8d8;
-      border-radius: 10px;
-      padding: 18px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+
+    .header-inner {
+      padding: 34px 0 28px;
     }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+
+    .deck {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .page-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 780px;
+      gap: 56px;
+      align-items: start;
+      padding: 42px 0 64px;
+    }
+
+    main {
+      min-width: 0;
+      max-width: 760px;
+    }
+
+    article {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: clamp(26px, 5vw, 54px);
+      box-shadow: 0 12px 34px rgba(38, 36, 30, 0.06);
+    }
+
+    article h2 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+
+    article h3 {
+      margin: 42px 0 12px;
+      font-size: 23px;
+      line-height: 1.25;
+    }
+
+    .byline {
+      margin: 0 0 30px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .lead {
+      font-size: 20px;
+    }
+
+    blockquote {
+      margin: 28px 0;
+      padding: 2px 0 2px 24px;
+      border-left: 3px solid var(--accent);
+      color: #373737;
+      font-size: 19px;
+    }
+
+    .note {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    aside {
+      min-width: 0;
+    }
+
+    .ad-column-label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
     .ad-wrap {
+      width: 100%;
+      min-height: 430px;
+      padding: 18px;
+      border: 1px dashed #a6a094;
+      background: rgba(255,255,255,.55);
       overflow-x: auto;
     }
-    #div-gpt-ad-1789930474739-0 {
+
+    #div-gpt-ad-1790071782003-0 {
       min-width: 250px;
       min-height: 15px;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(210px, 280px) 1fr;
-      gap: 8px 16px;
-      align-items: start;
-    }
-    .label {
-      font-weight: 700;
-    }
-    .value {
+
+    .debug-panel {
+      margin-top: 28px;
+      background: var(--panel);
+      color: var(--panel-ink);
+      border-radius: 12px;
+      padding: 20px;
+      font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       overflow-wrap: anywhere;
     }
-    .status {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-weight: 700;
-      background: #ececec;
+
+    .debug-panel h2,
+    .debug-panel h3 {
+      font-family: Arial, sans-serif;
+      color: #fff;
     }
+
+    .debug-panel h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+    }
+
+    .debug-panel h3 {
+      margin: 22px 0 8px;
+      font-size: 14px;
+    }
+
+    .debug-grid {
+      display: grid;
+      grid-template-columns: minmax(170px, 230px) minmax(0, 1fr);
+      gap: 7px 14px;
+    }
+
+    .debug-label {
+      color: var(--panel-muted);
+    }
+
+    .debug-value a {
+      color: #8ed0ff;
+    }
+
     pre {
       white-space: pre-wrap;
       word-break: break-word;
-      background: #f2f2f2;
-      border: 1px solid #ddd;
+      margin: 8px 0 0;
       padding: 12px;
       border-radius: 8px;
+      background: #090c0f;
+      color: #dce8ee;
       overflow: auto;
     }
-    table {
-      border-collapse: collapse;
-      width: 100%;
+
+    .diagnosis {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #182027;
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-      vertical-align: top;
+
+    .small {
+      color: var(--panel-muted);
+      font-size: 12px;
     }
-    ul {
-      margin-top: 8px;
+
+    @media (max-width: 1250px) {
+      .page-shell {
+        grid-template-columns: minmax(0, 1fr) 520px;
+        gap: 34px;
+      }
     }
-    .muted {
-      color: #666;
+
+    @media (max-width: 980px) {
+      .page-shell {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        max-width: none;
+      }
+
+      aside {
+        width: 100%;
+      }
     }
-    a {
-      overflow-wrap: anywhere;
-    }
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: #151515;
-        color: #eee;
+
+    @media (max-width: 640px) {
+      .header-inner,
+      .page-shell {
+        width: min(100% - 24px, 1440px);
       }
-      .card {
-        background: #1e1e1e;
-        border-color: #444;
+
+      article {
+        padding: 24px 20px;
       }
-      pre {
-        background: #111;
-        border-color: #444;
-      }
-      th, td {
-        border-color: #444;
-      }
-      .status {
-        background: #333;
-      }
-      .muted {
-        color: #aaa;
+
+      .debug-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -120,836 +254,1244 @@
     var networkId = "";
 
     var definedSizes = [
+      [720, 250],
+      [728, 90],
+      [336, 280],
+      [250, 250],
+      [320, 50],
+      [580, 400],
+      [300, 100],
+      [750, 250],
+      [320, 100],
+      [720, 90],
       [728, 15],
       [468, 60],
-      [320, 100],
-      [336, 280],
-      [720, 250],
-      [580, 400],
-      [680, 250],
-      [300, 100],
-      [720, 90],
-      [320, 50],
-      [750, 250],
-      [250, 250],
       [300, 250],
-      [728, 90]
+      [680, 250]
     ];
 
-    var eventTimes = {};
-    var timeline = [];
-    var pageErrors = [];
+    var debugState = {
+      result: "WAITING",
+      renderedSize: "N/A",
+      isEmpty: "N/A",
+      isBackfill: "N/A",
+      campaignId: null,
+      lineItemId: null,
+      creativeId: null,
+      advertiserId: null,
+      creativeTemplateId: null,
+      sourceAgnosticLineItemId: null,
+      sourceAgnosticCreativeId: null,
+      yieldGroupIds: null,
+      responseInfo: null,
+      rawRenderEvent: null,
+      timeline: [],
+      eventTimes: {},
+      errors: []
+    };
 
     function nowMs() {
       return performance.now();
     }
 
-    function elapsedLabel(ms) {
-      return typeof ms === "number" ? ms.toFixed(2) + " ms" : "N/A";
+    function fmtMs(value) {
+      return typeof value === "number"
+        ? value.toFixed(1) + " ms"
+        : "N/A";
     }
 
-    function addTimeline(name, extra) {
-      var t = nowMs();
-
-      if (
-        name === "slotRequested" ||
-        name === "slotResponseReceived" ||
-        name === "slotRenderEnded" ||
-        name === "slotOnload"
-      ) {
-        eventTimes[name] = t;
-      }
-
-      var item = {
-        event: name,
-        timeMs: Number(t.toFixed(2))
-      };
-
-      if (extra) {
-        Object.keys(extra).forEach(function(key) {
-          item[key] = extra[key];
-        });
-      }
-
-      timeline.push(item);
-      renderTimeline();
+    function safeValue(value) {
+      return value === undefined || value === null || value === ""
+        ? "N/A"
+        : value;
     }
 
-    function safeText(value) {
-      if (value === undefined || value === null || value === "") return "N/A";
-      if (Array.isArray(value)) return value.length ? value.join(", ") : "N/A";
-      return String(value);
-    }
-
-    function sizeText(size) {
-      if (!size) return "N/A";
-      if (Array.isArray(size)) return size.join("x");
-
-      if (
-        typeof size.getWidth === "function" &&
-        typeof size.getHeight === "function"
-      ) {
-        return size.getWidth() + "x" + size.getHeight();
-      }
-
-      return String(size);
-    }
-
-    function sizesText(sizes) {
-      if (!sizes || !sizes.length) return "None";
-
+    function sizesToText(sizes) {
       return sizes.map(function(size) {
-        return Array.isArray(size) ? size.join("x") : sizeText(size);
+        return Array.isArray(size)
+          ? size[0] + "x" + size[1]
+          : String(size);
       }).join(", ");
     }
 
     function setText(id, value) {
       var el = document.getElementById(id);
-      if (el) el.textContent = value;
+      if (el) {
+        el.textContent = safeValue(value);
+      }
     }
 
-    function setHtml(id, value) {
+    function setHtml(id, html) {
       var el = document.getElementById(id);
-      if (el) el.innerHTML = value;
+      if (el) {
+        el.innerHTML = html;
+      }
     }
 
-    function escapeHtml(value) {
-      return String(value).replace(/[&<>"']/g, function(ch) {
-        return {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;"
-        }[ch];
-      });
-    }
-
-    function makeGamLink(type, id) {
+    function gamLink(kind, id) {
       if (!networkId || id === undefined || id === null || id === "") {
         return "N/A";
       }
 
-      var href = "";
+      var base =
+        "https://admanager.google.com/" +
+        encodeURIComponent(networkId);
 
-      if (type === "lineItem") {
-        href =
-          "https://admanager.google.com/" +
-          encodeURIComponent(networkId) +
+      var url = "";
+
+      if (kind === "lineItem") {
+        url =
+          base +
           "#delivery/line_item/detail/" +
           encodeURIComponent(id);
-      } else if (type === "creative") {
-        href =
-          "https://admanager.google.com/" +
-          encodeURIComponent(networkId) +
+      } else if (kind === "creative") {
+        url =
+          base +
           "#delivery/creative/detail/" +
           encodeURIComponent(id);
-      } else if (type === "campaign") {
-        href =
-          "https://admanager.google.com/" +
-          encodeURIComponent(networkId) +
+      } else if (kind === "order") {
+        url =
+          base +
           "#delivery/order/order_overview/order_id=" +
           encodeURIComponent(id);
-      } else {
-        return "N/A";
       }
 
       return (
         '<a href="' +
-        href +
+        url +
         '" target="_blank" rel="noopener">' +
-        escapeHtml(id) +
+        String(id) +
         "</a>"
       );
     }
 
-    function renderViewportAndSizes() {
+    function recordEvent(name) {
+      var t = nowMs();
+
+      debugState.eventTimes[name] = t;
+
+      debugState.timeline.push({
+        event: name,
+        t: Number(t.toFixed(1))
+      });
+
+      renderDebug();
+    }
+
+    function getBrowserTimings() {
+      var t = debugState.eventTimes;
+
+      return {
+        "Request → response":
+          t.slotRequested != null &&
+          t.slotResponseReceived != null
+            ? t.slotResponseReceived - t.slotRequested
+            : null,
+
+        "Response → render":
+          t.slotResponseReceived != null &&
+          t.slotRenderEnded != null
+            ? t.slotRenderEnded - t.slotResponseReceived
+            : null,
+
+        "Render → onload":
+          t.slotRenderEnded != null &&
+          t.slotOnload != null
+            ? t.slotOnload - t.slotRenderEnded
+            : null,
+
+        "Request → onload":
+          t.slotRequested != null &&
+          t.slotOnload != null
+            ? t.slotOnload - t.slotRequested
+            : null
+      };
+    }
+
+    function updateViewportAndRequestedSizes() {
       var vw = window.innerWidth;
       var vh = window.innerHeight;
 
-      setText("viewport", vw + "x" + vh);
-      setText("defined-sizes", sizesText(definedSizes));
-      setText("requested-sizes", sizesText(definedSizes));
+      setText("dbg-viewport", vw + "x" + vh);
       setText(
-        "mapping-note",
-        "No size mapping configured; requested sizes equal defined sizes."
+        "dbg-defined-sizes",
+        sizesToText(definedSizes)
+      );
+
+      /*
+       * No size mapping was supplied.
+       * Requested sizes therefore equal defined sizes.
+       */
+      setText(
+        "dbg-requested-sizes",
+        sizesToText(definedSizes)
       );
     }
+
+    function renderDebug() {
+      setText(
+        "dbg-network-id",
+        networkId || "N/A"
+      );
+
+      setText(
+        "dbg-ad-unit-path",
+        adUnitPath || "N/A"
+      );
+
+      setText(
+        "dbg-page-url",
+        "https://militarnyi.com"
+      );
+
+      setText(
+        "dbg-div-id",
+        "div-gpt-ad-1790071782003-0"
+      );
+
+      updateViewportAndRequestedSizes();
+
+      setText(
+        "dbg-result",
+        debugState.result
+      );
+
+      setText(
+        "dbg-rendered-size",
+        debugState.renderedSize
+      );
+
+      setText(
+        "dbg-is-empty",
+        debugState.isEmpty
+      );
+
+      setText(
+        "dbg-is-backfill",
+        debugState.isBackfill
+      );
+
+      setHtml(
+        "dbg-campaign-id",
+        gamLink("order", debugState.campaignId)
+      );
+
+      setHtml(
+        "dbg-line-item-id",
+        gamLink("lineItem", debugState.lineItemId)
+      );
+
+      setHtml(
+        "dbg-creative-id",
+        gamLink("creative", debugState.creativeId)
+      );
+
+      setText(
+        "dbg-advertiser-id",
+        debugState.advertiserId
+      );
+
+      setText(
+        "dbg-creative-template-id",
+        debugState.creativeTemplateId
+      );
+
+      setText(
+        "dbg-sa-line-item-id",
+        debugState.sourceAgnosticLineItemId
+      );
+
+      setText(
+        "dbg-sa-creative-id",
+        debugState.sourceAgnosticCreativeId
+      );
+
+      setText(
+        "dbg-yield-group-ids",
+        Array.isArray(debugState.yieldGroupIds)
+          ? debugState.yieldGroupIds.join(", ")
+          : debugState.yieldGroupIds
+      );
+
+      var responsePre =
+        document.getElementById("dbg-response-info");
+
+      if (responsePre) {
+        responsePre.textContent =
+          JSON.stringify(
+            debugState.responseInfo,
+            null,
+            2
+          );
+      }
+
+      var renderPre =
+        document.getElementById("dbg-raw-render");
+
+      if (renderPre) {
+        renderPre.textContent =
+          JSON.stringify(
+            debugState.rawRenderEvent,
+            null,
+            2
+          );
+      }
+
+      var timelinePre =
+        document.getElementById("dbg-timeline");
+
+      if (timelinePre) {
+        timelinePre.textContent =
+          JSON.stringify(
+            {
+              events: debugState.timeline,
+
+              browserObservedTimings:
+                Object.fromEntries(
+                  Object.entries(
+                    getBrowserTimings()
+                  ).map(function(entry) {
+                    return [
+                      entry[0],
+                      fmtMs(entry[1])
+                    ];
+                  })
+                )
+            },
+            null,
+            2
+          );
+      }
+
+      var errorsPre =
+        document.getElementById("dbg-errors");
+
+      if (errorsPre) {
+        errorsPre.textContent =
+          debugState.errors.length
+            ? JSON.stringify(
+                debugState.errors,
+                null,
+                2
+              )
+            : "None captured";
+      }
+
+      var diagnosis =
+        document.getElementById("dbg-diagnosis");
+
+      if (diagnosis) {
+        if (debugState.result === "EMPTY") {
+          diagnosis.innerHTML =
+            "<strong>GPT completed the slot render cycle, but no ad was returned for this slot.</strong><br><br>" +
+            "Possible causes:<br>" +
+            "• no eligible demand<br>" +
+            "• targeting mismatch<br>" +
+            "• pricing/floor restrictions<br>" +
+            "• creative/size eligibility<br>" +
+            "• protections<br>" +
+            "• consent/privacy restrictions<br>" +
+            "• frequency cap<br>" +
+            "• inventory configuration<br>" +
+            "• ad-request/network failure<br><br>" +
+            "The exact GAM no-fill reason cannot be determined from GPT alone.";
+        } else if (
+          debugState.result ===
+          "FILLED — LIMITED INFO"
+        ) {
+          diagnosis.innerHTML =
+            "<strong>The slot rendered content, but GPT did not expose detailed response information for this response.</strong>";
+        } else if (
+          debugState.result === "FILLED"
+        ) {
+          diagnosis.innerHTML =
+            "<strong>GAM returned an ad response and GPT rendered content for this slot.</strong>";
+        } else {
+          diagnosis.textContent =
+            "Waiting for slotRenderEnded.";
+        }
+
+        if (
+          debugState.isBackfill === true ||
+          debugState.isBackfill === "Yes"
+        ) {
+          diagnosis.innerHTML +=
+            "<br><br><strong>Backfill: Yes</strong><br>" +
+            "The rendered ad was served through a backfill demand source. Some GAM delivery IDs may be unavailable.";
+        }
+      }
+    }
+
+    window.addEventListener(
+      "error",
+      function(e) {
+        debugState.errors.push({
+          type: "error",
+          message:
+            e.message || "Unknown error",
+          source:
+            e.filename || "",
+          line:
+            e.lineno || null,
+          column:
+            e.colno || null
+        });
+
+        renderDebug();
+      }
+    );
+
+    window.addEventListener(
+      "unhandledrejection",
+      function(e) {
+        debugState.errors.push({
+          type: "unhandledrejection",
+          reason:
+            e.reason &&
+            e.reason.message
+              ? e.reason.message
+              : String(e.reason)
+        });
+
+        renderDebug();
+      }
+    );
 
     var resizeTimer = null;
 
-    window.addEventListener("resize", function() {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(renderViewportAndSizes, 150);
-    });
+    window.addEventListener(
+      "resize",
+      function() {
+        clearTimeout(resizeTimer);
 
-    function renderTimeline() {
-      setText("timeline-json", JSON.stringify(timeline, null, 2));
-
-      var req = eventTimes.slotRequested;
-      var resp = eventTimes.slotResponseReceived;
-      var render = eventTimes.slotRenderEnded;
-      var load = eventTimes.slotOnload;
-
-      setText(
-        "t-request-response",
-        typeof req === "number" && typeof resp === "number"
-          ? elapsedLabel(resp - req)
-          : "N/A"
-      );
-
-      setText(
-        "t-response-render",
-        typeof resp === "number" && typeof render === "number"
-          ? elapsedLabel(render - resp)
-          : "N/A"
-      );
-
-      setText(
-        "t-render-onload",
-        typeof render === "number" && typeof load === "number"
-          ? elapsedLabel(load - render)
-          : "N/A"
-      );
-
-      setText(
-        "t-request-onload",
-        typeof req === "number" && typeof load === "number"
-          ? elapsedLabel(load - req)
-          : "N/A"
-      );
-    }
-
-    function renderPageErrors() {
-      setText(
-        "page-errors",
-        pageErrors.length
-          ? JSON.stringify(pageErrors, null, 2)
-          : "None observed."
-      );
-    }
-
-    window.addEventListener("error", function(e) {
-      pageErrors.push({
-        type: "error",
-        message: e.message || "Unknown error",
-        filename: e.filename || "",
-        line: e.lineno || null,
-        column: e.colno || null
-      });
-
-      renderPageErrors();
-    });
-
-    window.addEventListener("unhandledrejection", function(e) {
-      var reason;
-
-      try {
-        reason =
-          typeof e.reason === "string"
-            ? e.reason
-            : JSON.stringify(e.reason);
-      } catch (_) {
-        reason = String(e.reason);
+        resizeTimer =
+          setTimeout(
+            updateViewportAndRequestedSizes,
+            150
+          );
       }
-
-      pageErrors.push({
-        type: "unhandledrejection",
-        reason: reason || "Unknown rejection"
-      });
-
-      renderPageErrors();
-    });
-
-    function safeRenderObject(e) {
-      return {
-        isEmpty: e && "isEmpty" in e ? e.isEmpty : null,
-        size: e && e.size ? e.size : null,
-        advertiserId:
-          e && e.advertiserId != null ? e.advertiserId : null,
-        campaignId:
-          e && e.campaignId != null ? e.campaignId : null,
-        lineItemId:
-          e && e.lineItemId != null ? e.lineItemId : null,
-        creativeId:
-          e && e.creativeId != null ? e.creativeId : null,
-        creativeTemplateId:
-          e && e.creativeTemplateId != null
-            ? e.creativeTemplateId
-            : null,
-        isBackfill:
-          e && "isBackfill" in e ? e.isBackfill : null,
-        sourceAgnosticLineItemId:
-          e && e.sourceAgnosticLineItemId != null
-            ? e.sourceAgnosticLineItemId
-            : null,
-        sourceAgnosticCreativeId:
-          e && e.sourceAgnosticCreativeId != null
-            ? e.sourceAgnosticCreativeId
-            : null,
-        yieldGroupIds:
-          e && e.yieldGroupIds != null
-            ? e.yieldGroupIds
-            : null
-      };
-    }
-
-    function safeResponseObject(info) {
-      if (!info) return null;
-
-      return {
-        advertiserId:
-          info.advertiserId != null ? info.advertiserId : null,
-        campaignId:
-          info.campaignId != null ? info.campaignId : null,
-        lineItemId:
-          info.lineItemId != null ? info.lineItemId : null,
-        creativeId:
-          info.creativeId != null ? info.creativeId : null,
-        creativeTemplateId:
-          info.creativeTemplateId != null
-            ? info.creativeTemplateId
-            : null
-      };
-    }
-
-    function renderRenderEvent(e) {
-      var responseInfo =
-        slot && typeof slot.getResponseInformation === "function"
-          ? slot.getResponseInformation()
-          : null;
-
-      var raw = safeRenderObject(e);
-      var response = safeResponseObject(responseInfo);
-
-      setText("raw-render-event", JSON.stringify(raw, null, 2));
-      setText(
-        "response-information",
-        JSON.stringify(response, null, 2)
-      );
-
-      setText("rendered-size", sizeText(e.size));
-
-      setText(
-        "is-empty",
-        e.isEmpty === true
-          ? "true"
-          : e.isEmpty === false
-            ? "false"
-            : "N/A"
-      );
-
-      setText(
-        "is-backfill",
-        e.isBackfill === true
-          ? "true"
-          : e.isBackfill === false
-            ? "false"
-            : "N/A"
-      );
-
-      var advertiserId =
-        e.advertiserId != null
-          ? e.advertiserId
-          : responseInfo && responseInfo.advertiserId != null
-            ? responseInfo.advertiserId
-            : null;
-
-      var campaignId =
-        e.campaignId != null
-          ? e.campaignId
-          : responseInfo && responseInfo.campaignId != null
-            ? responseInfo.campaignId
-            : null;
-
-      var lineItemId =
-        e.lineItemId != null
-          ? e.lineItemId
-          : responseInfo && responseInfo.lineItemId != null
-            ? responseInfo.lineItemId
-            : null;
-
-      var creativeId =
-        e.creativeId != null
-          ? e.creativeId
-          : responseInfo && responseInfo.creativeId != null
-            ? responseInfo.creativeId
-            : null;
-
-      var creativeTemplateId =
-        e.creativeTemplateId != null
-          ? e.creativeTemplateId
-          : responseInfo &&
-              responseInfo.creativeTemplateId != null
-            ? responseInfo.creativeTemplateId
-            : null;
-
-      setHtml(
-        "campaign-id",
-        makeGamLink("campaign", campaignId)
-      );
-
-      setHtml(
-        "line-item-id",
-        makeGamLink("lineItem", lineItemId)
-      );
-
-      setHtml(
-        "creative-id",
-        makeGamLink("creative", creativeId)
-      );
-
-      setText("advertiser-id", safeText(advertiserId));
-      setText(
-        "creative-template-id",
-        safeText(creativeTemplateId)
-      );
-
-      setText(
-        "source-agnostic-line-item-id",
-        safeText(e.sourceAgnosticLineItemId)
-      );
-
-      setText(
-        "source-agnostic-creative-id",
-        safeText(e.sourceAgnosticCreativeId)
-      );
-
-      setText(
-        "yield-group-ids",
-        safeText(e.yieldGroupIds)
-      );
-
-      var result = "UNKNOWN";
-      var diagnosis =
-        "GPT fired slotRenderEnded, but the fill state was not exposed in the expected form.";
-
-      if (e.isEmpty === true) {
-        result = "EMPTY";
-
-        diagnosis =
-          "GPT completed the slot render cycle, but no ad was returned for this slot.\n\n" +
-          "Possible causes:\n" +
-          "• no eligible demand\n" +
-          "• targeting mismatch\n" +
-          "• pricing/floor restrictions\n" +
-          "• creative/size eligibility\n" +
-          "• protections\n" +
-          "• consent/privacy restrictions\n" +
-          "• frequency cap\n" +
-          "• inventory configuration\n" +
-          "• ad-request/network failure\n\n" +
-          "The exact GAM no-fill reason cannot be determined from GPT alone.";
-      } else if (
-        e.isEmpty === false &&
-        responseInfo
-      ) {
-        result = "FILLED";
-
-        diagnosis =
-          "GAM returned an ad response and GPT rendered content for this slot.";
-      } else if (
-        e.isEmpty === false &&
-        !responseInfo
-      ) {
-        result = "FILLED — LIMITED INFO";
-
-        diagnosis =
-          "The slot rendered content, but GPT did not expose detailed response information for this response.";
-      }
-
-      if (e.isBackfill === true) {
-        diagnosis +=
-          "\n\nBackfill: Yes\n" +
-          "The rendered ad was served through a backfill demand source. Some GAM delivery IDs may be unavailable.";
-      }
-
-      setText("ad-result", result);
-      setText("diagnosis", diagnosis);
-    }
+    );
 
     googletag.cmd.push(function() {
       slot = googletag.defineSlot(
         "/23303899018/np_mil/all-news-ic1",
-        definedSizes,
-        "div-gpt-ad-1789930474739-0"
+        [
+          [720, 250],
+          [728, 90],
+          [336, 280],
+          [250, 250],
+          [320, 50],
+          [580, 400],
+          [300, 100],
+          [750, 250],
+          [320, 100],
+          [720, 90],
+          [728, 15],
+          [468, 60],
+          [300, 250],
+          [680, 250]
+        ],
+        "div-gpt-ad-1790071782003-0"
       );
 
-      if (!slot) {
-        pageErrors.push({
-          type: "gpt",
-          message: "googletag.defineSlot() returned null."
+      if (slot) {
+        slot.addService(
+          googletag.pubads()
+        );
+
+        adUnitPath =
+          slot.getAdUnitPath();
+
+        networkId =
+          (
+            adUnitPath.match(
+              /^\/(\d+)\//
+            ) || []
+          )[1] || "";
+
+        googletag.pubads()
+          .addEventListener(
+            "slotRequested",
+            function(e) {
+              if (e.slot !== slot) {
+                return;
+              }
+
+              recordEvent(
+                "slotRequested"
+              );
+            }
+          );
+
+        googletag.pubads()
+          .addEventListener(
+            "slotResponseReceived",
+            function(e) {
+              if (e.slot !== slot) {
+                return;
+              }
+
+              recordEvent(
+                "slotResponseReceived"
+              );
+            }
+          );
+
+        googletag.pubads()
+          .addEventListener(
+            "slotRenderEnded",
+            function(e) {
+              if (e.slot !== slot) {
+                return;
+              }
+
+              recordEvent(
+                "slotRenderEnded"
+              );
+
+              var responseInfo =
+                slot.getResponseInformation();
+
+              var safeResponse =
+                responseInfo
+                  ? {
+                      advertiserId:
+                        safeValue(
+                          responseInfo.advertiserId
+                        ),
+
+                      campaignId:
+                        safeValue(
+                          responseInfo.campaignId
+                        ),
+
+                      lineItemId:
+                        safeValue(
+                          responseInfo.lineItemId
+                        ),
+
+                      creativeId:
+                        safeValue(
+                          responseInfo.creativeId
+                        ),
+
+                      creativeTemplateId:
+                        safeValue(
+                          responseInfo.creativeTemplateId
+                        )
+                    }
+                  : null;
+
+              var safeRenderEvent = {
+                isEmpty:
+                  e.isEmpty,
+
+                size:
+                  e.size || null,
+
+                advertiserId:
+                  e.advertiserId,
+
+                campaignId:
+                  e.campaignId,
+
+                lineItemId:
+                  e.lineItemId,
+
+                creativeId:
+                  e.creativeId,
+
+                creativeTemplateId:
+                  e.creativeTemplateId,
+
+                isBackfill:
+                  e.isBackfill,
+
+                sourceAgnosticLineItemId:
+                  e.sourceAgnosticLineItemId,
+
+                sourceAgnosticCreativeId:
+                  e.sourceAgnosticCreativeId,
+
+                yieldGroupIds:
+                  e.yieldGroupIds || null
+              };
+
+              debugState.isEmpty =
+                e.isEmpty;
+
+              debugState.renderedSize =
+                e.size &&
+                e.size.length === 2
+                  ? e.size[0] +
+                    "x" +
+                    e.size[1]
+                  : "N/A";
+
+              debugState.isBackfill =
+                e.isBackfill === true
+                  ? "Yes"
+                  : (
+                      e.isBackfill === false
+                        ? "No"
+                        : "N/A"
+                    );
+
+              debugState.advertiserId =
+                e.advertiserId != null
+                  ? e.advertiserId
+                  : (
+                      responseInfo &&
+                      responseInfo.advertiserId
+                    );
+
+              debugState.campaignId =
+                e.campaignId != null
+                  ? e.campaignId
+                  : (
+                      responseInfo &&
+                      responseInfo.campaignId
+                    );
+
+              debugState.lineItemId =
+                e.lineItemId != null
+                  ? e.lineItemId
+                  : (
+                      responseInfo &&
+                      responseInfo.lineItemId
+                    );
+
+              debugState.creativeId =
+                e.creativeId != null
+                  ? e.creativeId
+                  : (
+                      responseInfo &&
+                      responseInfo.creativeId
+                    );
+
+              debugState.creativeTemplateId =
+                e.creativeTemplateId != null
+                  ? e.creativeTemplateId
+                  : (
+                      responseInfo &&
+                      responseInfo.creativeTemplateId
+                    );
+
+              debugState.sourceAgnosticLineItemId =
+                e.sourceAgnosticLineItemId;
+
+              debugState.sourceAgnosticCreativeId =
+                e.sourceAgnosticCreativeId;
+
+              debugState.yieldGroupIds =
+                e.yieldGroupIds || null;
+
+              debugState.responseInfo =
+                safeResponse;
+
+              debugState.rawRenderEvent =
+                safeRenderEvent;
+
+              if (e.isEmpty === true) {
+                debugState.result =
+                  "EMPTY";
+              } else if (
+                e.isEmpty === false &&
+                responseInfo
+              ) {
+                debugState.result =
+                  "FILLED";
+              } else if (
+                e.isEmpty === false &&
+                !responseInfo
+              ) {
+                debugState.result =
+                  "FILLED — LIMITED INFO";
+              }
+
+              renderDebug();
+            }
+          );
+
+        googletag.pubads()
+          .addEventListener(
+            "slotOnload",
+            function(e) {
+              if (e.slot !== slot) {
+                return;
+              }
+
+              recordEvent(
+                "slotOnload"
+              );
+            }
+          );
+      } else {
+        debugState.errors.push({
+          type: "slot-definition",
+          message:
+            "googletag.defineSlot() returned null."
         });
-
-        renderPageErrors();
-        return;
       }
-
-      slot.addService(googletag.pubads());
-
-      adUnitPath = slot.getAdUnitPath();
-      networkId =
-        (adUnitPath.match(/^\/(\d+)\//) || [])[1] || "";
 
       googletag.pubads().set(
         "page_url",
         "https://militarnyi.com"
       );
 
-      googletag.pubads().addEventListener(
-        "slotRequested",
-        function(e) {
-          if (e.slot !== slot) return;
-          addTimeline("slotRequested");
-        }
-      );
+      googletag.pubads()
+        .enableSingleRequest();
 
-      googletag.pubads().addEventListener(
-        "slotResponseReceived",
-        function(e) {
-          if (e.slot !== slot) return;
-          addTimeline("slotResponseReceived");
-        }
-      );
-
-      googletag.pubads().addEventListener(
-        "slotRenderEnded",
-        function(e) {
-          if (e.slot !== slot) return;
-          addTimeline("slotRenderEnded");
-          renderRenderEvent(e);
-        }
-      );
-
-      googletag.pubads().addEventListener(
-        "slotOnload",
-        function(e) {
-          if (e.slot !== slot) return;
-          addTimeline("slotOnload");
-        }
-      );
-
-      googletag.pubads().addEventListener(
-        "impressionViewable",
-        function(e) {
-          if (e.slot !== slot) return;
-          addTimeline("impressionViewable");
-        }
-      );
-
-      googletag.pubads().addEventListener(
-        "slotVisibilityChanged",
-        function(e) {
-          if (e.slot !== slot) return;
-
-          addTimeline("slotVisibilityChanged", {
-            inViewPercentage: e.inViewPercentage
-          });
-        }
-      );
-
-      googletag.pubads().enableSingleRequest();
       googletag.enableServices();
+
+      renderDebug();
     });
 
-    document.addEventListener(
+    window.addEventListener(
       "DOMContentLoaded",
-      function() {
-        renderViewportAndSizes();
-        renderPageErrors();
-
-        setText(
-          "page-url",
-          "https://militarnyi.com"
-        );
-
-        setText(
-          "div-id",
-          "div-gpt-ad-1789930474739-0"
-        );
-
-        googletag.cmd.push(function() {
-          setText(
-            "ad-unit-path",
-            adUnitPath || "N/A"
-          );
-
-          setText(
-            "network-id",
-            networkId || "N/A"
-          );
-        });
-      }
+      renderDebug
     );
   </script>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>GAM GPT Test Page</h1>
-      <p class="muted">
-        Ad unit: /23303899018/np_mil/all-news-ic1
+  <header>
+    <div class="header-inner">
+      <h1>
+        Тестова сторінка для рекламного слота
+      </h1>
+
+      <p class="deck">
+        Довга текстова сторінка українською мовою для перевірки
+        поведінки рекламного блока під час прокручування.
+        Праворуч розташовано GAM-слот та діагностичну панель.
       </p>
     </div>
+  </header>
 
-    <div class="card ad-wrap">
-      <h2>Ad Slot</h2>
+  <div class="page-shell">
+    <main>
+      <article>
+        <h2>
+          Тарас Шевченко: мотив дороги, пам’яті й волі
+        </h2>
 
-      <div id="div-gpt-ad-1789930474739-0"></div>
+        <p class="byline">
+          Текстова підкладка з творів, що перебувають
+          у суспільному надбанні.
+        </p>
 
-      <script>
-        googletag.cmd.push(function() {
-          googletag.display(
-            "div-gpt-ad-1789930474739-0"
-          );
-        });
-      </script>
-    </div>
+        <p class="lead">
+          Українська класична література часто починається
+          з простору: дороги, степу, річки, села, далекого
+          обрію. У Шевченка цей простір майже ніколи не буває
+          просто декорацією. Він дихає разом із людиною,
+          зберігає пам’ять, нагадує про втрати й водночас
+          відкриває можливість рухатися далі.
+        </p>
 
-    <div class="card">
-      <h2>GPT Debug Panel</h2>
+        <blockquote>
+          Реве та стогне Дніпр широкий,<br>
+          Сердитий вітер завива,<br>
+          Додолу верби гне високі,<br>
+          Горами хвилю підійма.
+        </blockquote>
 
-      <div class="grid">
-        <div class="label">Network ID</div>
-        <div class="value" id="network-id">N/A</div>
+        <p>
+          У цих рядках природа діє як повноправний учасник
+          події. Річка, вітер, верби, хвиля — усе перебуває
+          в русі. Саме тому читач легко відчуває не лише
+          пейзаж, а й напруження. Український літературний
+          краєвид XIX століття часто має цю властивість:
+          зовнішній світ передає внутрішній стан людини
+          без прямого пояснення.
+        </p>
 
-        <div class="label">Ad unit path</div>
-        <div class="value" id="ad-unit-path">N/A</div>
+        <p>
+          Для тестової сторінки такий текст зручний ще й
+          практично: довгі абзаци, різна довжина речень,
+          цитати та підзаголовки створюють природний ритм
+          читання. Сторінку можна прокручувати,
+          спостерігаючи, як поводиться реклама у правій
+          колонці, не перетворюючи основний контент на набір
+          штучних «lorem ipsum».
+        </p>
 
-        <div class="label">page_url</div>
-        <div class="value" id="page-url">
-          https://militarnyi.com
-        </div>
+        <h3>Садок вишневий коло хати</h3>
 
-        <div class="label">Div ID</div>
-        <div class="value" id="div-id">
-          div-gpt-ad-1789930474739-0
-        </div>
+        <blockquote>
+          Садок вишневий коло хати,<br>
+          Хрущі над вишнями гудуть,<br>
+          Плугатарі з плугами йдуть,<br>
+          Співають ідучи дівчата,<br>
+          А матері вечерять ждуть.
+        </blockquote>
 
-        <div class="label">Defined sizes</div>
-        <div class="value" id="defined-sizes">N/A</div>
+        <p>
+          Цей пейзаж побудований зовсім інакше. Тут немає
+          бурі й розбурханого Дніпра, натомість є
+          повторюваний, майже домашній порядок: праця
+          завершується, люди повертаються, вечір збирає
+          родину. Через прості деталі виникає відчуття цілого
+          світу, де кожна дія має своє місце й час.
+        </p>
 
-        <div class="label">Requested sizes</div>
-        <div class="value">
-          <div id="requested-sizes">N/A</div>
-          <div
-            class="muted"
-            id="mapping-note"
-          ></div>
-        </div>
+        <p>
+          Класична поезія часто працює саме так — невелика
+          сцена вміщує значно більше, ніж буквально названо
+          в тексті. Сад, хата, спів, вечеря стають образами
+          дому й тривалості, а читач сам добудовує те,
+          що лишається між рядками.
+        </p>
 
-        <div class="label">Viewport</div>
-        <div class="value" id="viewport">N/A</div>
+        <h3>Думи мої, думи мої</h3>
 
-        <div class="label">Ad result</div>
-        <div class="value">
-          <span class="status" id="ad-result">
-            WAITING
-          </span>
-        </div>
+        <blockquote>
+          Думи мої, думи мої,<br>
+          Лихо мені з вами!<br>
+          Нащо стали на папері<br>
+          Сумними рядами?..
+        </blockquote>
 
-        <div class="label">Rendered size</div>
-        <div class="value" id="rendered-size">
-          N/A
-        </div>
+        <p>
+          Тут уже немає великої панорами. Поет звертається
+          до власних думок так, наче вони живі співрозмовники.
+          Прийом дуже давній і водночас сучасний: внутрішній
+          монолог перетворюється на діалог, а письмо —
+          на спосіб винести переживання назовні.
+        </p>
 
-        <div class="label">isEmpty</div>
-        <div class="value" id="is-empty">
-          N/A
-        </div>
+        <p>
+          Шевченківська мова легко переходить від особистого
+          до загального. Те, що починається як звернення
+          до власних дум, поступово набуває ширшого значення —
+          про слово, відповідальність, пам’ять і те,
+          кому це слово адресоване. Саме ця здатність
+          змінювати масштаб робить його поезію придатною
+          для довгого, уважного читання.
+        </p>
 
-        <div class="label">isBackfill</div>
-        <div class="value" id="is-backfill">
-          N/A
-        </div>
+        <h3>Заповіт</h3>
 
-        <div class="label">Campaign/Order ID</div>
-        <div class="value" id="campaign-id">
-          N/A
-        </div>
+        <blockquote>
+          Як умру, то поховайте<br>
+          Мене на могилі,<br>
+          Серед степу широкого,<br>
+          На Вкраїні милій.
+        </blockquote>
 
-        <div class="label">Line item ID</div>
-        <div class="value" id="line-item-id">
-          N/A
-        </div>
+        <p>
+          Простір знову повертається: могила, степ, Україна,
+          Дніпро. Ліричний голос ніби піднімається над землею
+          й охоплює її широким поглядом. У такій композиції
+          особиста доля стає частиною історичної пам’яті,
+          а пейзаж — способом говорити про належність
+          до країни та спільноти.
+        </p>
 
-        <div class="label">Creative ID</div>
-        <div class="value" id="creative-id">
-          N/A
-        </div>
+        <p>
+          Для сучасного читача важливо й те, що ці тексти
+          пережили власну епоху. Їх читають у школі,
+          цитують у публічному просторі, переосмислюють
+          у музиці, театрі та візуальній культурі.
+          Але найкраще вони працюють саме як текст:
+          повільно, рядок за рядком, коли звичні фрази
+          знову набувають ваги.
+        </p>
 
-        <div class="label">Advertiser ID</div>
-        <div class="value" id="advertiser-id">
-          N/A
-        </div>
+        <h3>І знову про дорогу</h3>
 
-        <div class="label">
-          Creative Template ID
-        </div>
-        <div
-          class="value"
-          id="creative-template-id"
-        >
-          N/A
-        </div>
+        <p>
+          Дорога в класичній літературі — це майже завжди
+          більше, ніж переміщення з одного місця до іншого.
+          Вона може означати втечу, повернення, пошук,
+          заслання, мандрівку, очікування або вибір.
+          У Шевченка рух часто пов’язаний із відстанню
+          між людиною та домом. Чим більшою стає ця відстань,
+          тим сильніше працює пам’ять.
+        </p>
 
-        <div class="label">
-          Source-agnostic Line item ID
-        </div>
-        <div
-          class="value"
-          id="source-agnostic-line-item-id"
-        >
-          N/A
-        </div>
+        <p>
+          Саме тому в багатьох творах ландшафт зберігає
+          емоцію. Степ пам’ятає того, хто ним ішов.
+          Річка пам’ятає тих, хто дивився на її береги.
+          Село, садок, дорога й могила утворюють карту
+          не стільки географічну, скільки внутрішню.
+        </p>
 
-        <div class="label">
-          Source-agnostic Creative ID
-        </div>
-        <div
-          class="value"
-          id="source-agnostic-creative-id"
-        >
-          N/A
-        </div>
+        <p>
+          У довгому вебтексті ця літературна властивість
+          створює приємну зміну темпу. Користувач прокручує
+          сторінку не через повторювані технічні блоки,
+          а через зв’язний матеріал. Праворуч тим часом
+          можна перевіряти рекламну поведінку на різних
+          позиціях скролу, висотах viewport і станах
+          завантаження.
+        </p>
 
-        <div class="label">
-          Yield group IDs
-        </div>
-        <div
-          class="value"
-          id="yield-group-ids"
-        >
-          N/A
-        </div>
+        <h3>Тиша як частина тексту</h3>
+
+        <p>
+          У поезії важать не тільки слова, а й паузи.
+          Перенесення рядка, коротка фраза, раптовий знак
+          питання — усе це створює ритм. У прозі схожу роль
+          виконують абзаци. Саме тому ця тестова сторінка
+          має довгі й коротші фрагменти, цитати та відступи:
+          її вертикальний ритм ближчий до справжньої
+          редакційної сторінки.
+        </p>
+
+        <p>
+          Якщо дивитися на неї як на макет новинного чи
+          журнального матеріалу, основна колонка поводиться
+          передбачувано: текст формує висоту документа,
+          а права колонка залишається окремою зоною
+          для реклами. Ніякої sticky-поведінки тут навмисно
+          не додано.
+        </p>
+
+        <h3>Пам’ять і читання</h3>
+
+        <p>
+          Класика не існує лише в підручнику. Вона живе,
+          коли текст перечитують у нових обставинах.
+          Одні й ті самі рядки можуть сприйматися по-різному
+          в юності, у дорозі, далеко від дому або після
+          подій, що змінюють особистий досвід. Це не змінює
+          сам текст, але змінює його контекст — а отже,
+          і те, що читач у ньому помічає.
+        </p>
+
+        <p>
+          У цьому сенсі старі тексти залишаються напрочуд
+          сучасними. Вони нагадують, що мова зберігає
+          не тільки факти, а й способи відчувати: як люди
+          описують втрату, надію, дім, ніч, вітер, дорогу
+          чи очікування. Через це літературний фрагмент
+          може бути сильнішим за будь-який нейтральний
+          заповнювач сторінки.
+        </p>
+
+        <h3>
+          Кілька абзаців для додаткової прокрутки
+        </h3>
+
+        <p>
+          Дніпро в українській культурі часто читається
+          як вісь простору. Він одночасно є реальною річкою,
+          історичним маршрутом і символом зв’язку між
+          різними частинами країни. У поезії ця багатозначність
+          виникає природно: досить назвати воду, берег,
+          високі кручі — і читач уже бачить не одну точку
+          на карті, а цілий культурний образ.
+        </p>
+
+        <p>
+          Степ працює інакше. Він відкритий, майже безмежний,
+          тому легко стає образом свободи або самотності.
+          У ньому мало предметів, які затримують погляд,
+          і через це відстань відчувається сильніше.
+          У прозі степ може сповільнювати час; у поезії —
+          розширювати короткий образ до масштабу країни.
+        </p>
+
+        <p>
+          Хата й сад, навпаки, стискають простір до людського
+          масштабу. Тут важливі дрібні звуки та повторювані
+          дії. Вечір, розмова, спів, робота, запах землі
+          після дня — речі, що не потребують великого сюжету,
+          аби створити відчуття присутності.
+        </p>
+
+        <p>
+          Коли такі образи стоять поруч, літературний текст
+          отримує глибину: широкий краєвид переходить
+          у домашню сцену, історичне — в особисте,
+          урочисте — у тихе. Для читача це природний ритм,
+          а для тестової сторінки — корисна довжина
+          та різноманітна вертикальна структура.
+        </p>
+
+        <p>
+          Наприкінці сторінки можна перевірити, чи не
+          змінилася поведінка рекламного слота після довгого
+          скролу, чи коректно відпрацьовують події GPT
+          і чи не з’явилися помилки в консолі браузера.
+          Діагностична панель праворуч показує лише те,
+          що GPT публічно надає через свої API та події,
+          не підміняючи фактичну відповідь ad server.
+        </p>
+
+        <p class="note">
+          Тарас Шевченко помер 1861 року; наведені твори
+          є суспільним надбанням.
+        </p>
+      </article>
+    </main>
+
+    <aside>
+      <p class="ad-column-label">
+        Google Ad Manager test slot
+      </p>
+
+      <div class="ad-wrap">
+        <div id="div-gpt-ad-1790071782003-0" style="min-width: 300px; min-height: 250px; position: sticky; top: 20px; z-index: 10;"></div>
+
+        <script>
+          googletag.cmd.push(function(){
+            googletag.display(
+              "div-gpt-ad-1790071782003-0"
+            );
+          });
+        </script>
       </div>
-    </div>
 
-    <div class="card">
-      <h2>Diagnosis</h2>
-      <pre id="diagnosis">Waiting for slotRenderEnded.</pre>
-    </div>
+      <section
+        class="debug-panel"
+        aria-label="GPT debug panel"
+      >
+        <h2>GPT Debug Panel</h2>
 
-    <div class="card">
-      <h2>Response information</h2>
-      <pre id="response-information">null</pre>
-    </div>
+        <div class="debug-grid">
+          <div class="debug-label">
+            Network ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-network-id"
+          >
+            N/A
+          </div>
 
-    <div class="card">
-      <h2>Raw GPT render event</h2>
+          <div class="debug-label">
+            Ad unit path
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-ad-unit-path"
+          >
+            N/A
+          </div>
 
-      <p class="muted">
-        Safe plain-object extraction only; the full GPT
-        event object is not stringified.
-      </p>
+          <div class="debug-label">
+            page_url
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-page-url"
+          >
+            https://militarnyi.com
+          </div>
 
-      <pre id="raw-render-event">Waiting for slotRenderEnded.</pre>
-    </div>
+          <div class="debug-label">
+            Div ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-div-id"
+          >
+            div-gpt-ad-1790071782003-0
+          </div>
 
-    <div class="card">
-      <h2>Timing / event timeline</h2>
+          <div class="debug-label">
+            Defined sizes
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-defined-sizes"
+          >
+            N/A
+          </div>
 
-      <p class="muted">
-        Browser-observed timings. These are not exact
-        GAM server latency measurements.
-      </p>
+          <div class="debug-label">
+            Requested sizes
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-requested-sizes"
+          >
+            N/A
+          </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Interval</th>
-            <th>Observed time</th>
-          </tr>
-        </thead>
+          <div class="debug-label">
+            Viewport
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-viewport"
+          >
+            N/A
+          </div>
 
-        <tbody>
-          <tr>
-            <td>Request → response</td>
-            <td id="t-request-response">
-              N/A
-            </td>
-          </tr>
+          <div class="debug-label">
+            Ad result
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-result"
+          >
+            WAITING
+          </div>
 
-          <tr>
-            <td>Response → render</td>
-            <td id="t-response-render">
-              N/A
-            </td>
-          </tr>
+          <div class="debug-label">
+            Rendered size
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-rendered-size"
+          >
+            N/A
+          </div>
 
-          <tr>
-            <td>Render → onload</td>
-            <td id="t-render-onload">
-              N/A
-            </td>
-          </tr>
+          <div class="debug-label">
+            isEmpty
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-is-empty"
+          >
+            N/A
+          </div>
 
-          <tr>
-            <td>Request → onload</td>
-            <td id="t-request-onload">
-              N/A
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <div class="debug-label">
+            isBackfill
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-is-backfill"
+          >
+            N/A
+          </div>
 
-      <h3>Event timeline</h3>
-      <pre id="timeline-json">[]</pre>
-    </div>
+          <div class="debug-label">
+            Campaign/Order ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-campaign-id"
+          >
+            N/A
+          </div>
 
-    <div class="card">
-      <h2>Page errors</h2>
-      <pre id="page-errors">None observed.</pre>
-    </div>
+          <div class="debug-label">
+            Line item ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-line-item-id"
+          >
+            N/A
+          </div>
 
-    <div class="card">
-      <h2>HTTP / DevTools guide</h2>
+          <div class="debug-label">
+            Creative ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-creative-id"
+          >
+            N/A
+          </div>
 
-      <p>
-        <strong>DevTools → Network/Console:</strong>
-        filter <code>gpt</code> /
-        <code>doubleclick</code>
-      </p>
+          <div class="debug-label">
+            Advertiser ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-advertiser-id"
+          >
+            N/A
+          </div>
 
-      <p>
-        <strong>Raw HTTP ad-server response:</strong>
-        DevTools → Network → filter
-        <code>gampad/ads</code>
-      </p>
+          <div class="debug-label">
+            Creative Template ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-creative-template-id"
+          >
+            N/A
+          </div>
 
-      <ul>
-        <li>
-          <strong>HTTP 200:</strong>
-          request succeeded at HTTP level; GAM may still
-          return an ad or blank response.
-        </li>
+          <div class="debug-label">
+            Source-agnostic Line item ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-sa-line-item-id"
+          >
+            N/A
+          </div>
 
-        <li>
-          <strong>HTTP 204:</strong>
-          request succeeded but no ad content was returned.
-        </li>
+          <div class="debug-label">
+            Source-agnostic Creative ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-sa-creative-id"
+          >
+            N/A
+          </div>
 
-        <li>
-          <strong>HTTP 4xx:</strong>
-          request/config/access problem.
-        </li>
+          <div class="debug-label">
+            Yield group IDs
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-yield-group-ids"
+          >
+            N/A
+          </div>
+        </div>
 
-        <li>
-          <strong>HTTP 5xx:</strong>
-          server/infrastructure problem.
-        </li>
+        <h3>Response information</h3>
+        <pre id="dbg-response-info">null</pre>
 
-        <li>
-          <strong>HTTP 302/307:</strong>
-          redirect; follow redirect chain.
-        </li>
-      </ul>
+        <h3>Raw GPT render event</h3>
+        <pre id="dbg-raw-render">null</pre>
 
-      <p class="muted">
-        HTTP status is not inferred from GPT event data.
-      </p>
-    </div>
+        <h3>Timing/event timeline</h3>
+        <pre id="dbg-timeline">{"events":[]}</pre>
+
+        <p class="small">
+          Browser-observed timings, not exact GAM server latency.
+        </p>
+
+        <h3>Page errors</h3>
+        <pre id="dbg-errors">None captured</pre>
+
+        <h3>Diagnosis</h3>
+        <div
+          class="diagnosis"
+          id="dbg-diagnosis"
+        >
+          Waiting for slotRenderEnded.
+        </div>
+
+        <h3>HTTP guide</h3>
+
+        <div>
+          HTTP 200: request succeeded at HTTP level; GAM may still
+          return an ad or blank response.<br>
+          HTTP 204: request succeeded but no ad content was returned.<br>
+          HTTP 4xx: request/config/access problem.<br>
+          HTTP 5xx: server/infrastructure problem.<br>
+          HTTP 302/307: redirect; follow redirect chain.
+        </div>
+
+        <p class="small">
+          HTTP status is not inferred from GPT event data.
+        </p>
+
+        <h3>Browser inspection</h3>
+
+        <div>
+          DevTools → Network/Console (filter gpt/doubleclick)<br>
+          Raw HTTP ad-server response:
+          DevTools → Network → filter gampad/ads
+        </div>
+      </section>
+    </aside>
   </div>
 </body>
 </html>
