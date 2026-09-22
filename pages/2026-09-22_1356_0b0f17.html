@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GAM GPT Test — Militarnyi / all-news-ic1</title>
+
+  <style>
+    :root {
+      --bg: #f4f1e8;
+      --paper: #fffdf7;
+      --ink: #232323;
+      --muted: #6a6a6a;
+      --line: #d9d3c6;
+      --panel: #101418;
+      --panel-ink: #e8eef2;
+      --panel-muted: #9fb0bb;
+      --accent: #305f72;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.72;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .header-inner,
+    .page-shell {
+      width: min(1440px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      padding: 34px 0 28px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+
+    .deck {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .page-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 780px;
+      gap: 56px;
+      align-items: start;
+      padding: 42px 0 64px;
+    }
+
+    main {
+      min-width: 0;
+      max-width: 760px;
+    }
+
+    article {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: clamp(26px, 5vw, 54px);
+      box-shadow: 0 12px 34px rgba(38, 36, 30, 0.06);
+    }
+
+    article h2 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+
+    article h3 {
+      margin: 42px 0 12px;
+      font-size: 23px;
+      line-height: 1.25;
+    }
+
+    .byline {
+      margin: 0 0 30px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .lead {
+      font-size: 20px;
+    }
+
+    blockquote {
+      margin: 28px 0;
+      padding: 2px 0 2px 24px;
+      border-left: 3px solid var(--accent);
+      color: #373737;
+      font-size: 19px;
+    }
+
+    .note {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    aside {
+      min-width: 0;
+    }
+
+    .ad-column-label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .ad-wrap {
+      width: 100%;
+      min-height: 430px;
+      padding: 18px;
+      border: 1px dashed #a6a094;
+      background: rgba(255,255,255,.55);
+      overflow-x: auto;
+    }
+
+    #div-gpt-ad-1790071782003-0 {
+      min-width: 250px;
+      min-height: 15px;
+    }
+
+    .debug-panel {
+      margin-top: 28px;
+      background: var(--panel);
+      color: var(--panel-ink);
+      border-radius: 12px;
+      padding: 20px;
+      font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .debug-panel h2,
+    .debug-panel h3 {
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    .debug-panel h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+    }
+
+    .debug-panel h3 {
+      margin: 22px 0 8px;
+      font-size: 14px;
+    }
+
+    .debug-grid {
+      display: grid;
+      grid-template-columns: minmax(170px, 230px) minmax(0, 1fr);
+      gap: 7px 14px;
+    }
+
+    .debug-label {
+      color: var(--panel-muted);
+    }
+
+    .debug-value a {
+      color: #8ed0ff;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 8px 0 0;
+      padding: 12px;
+      border-radius: 8px;
+      background: #090c0f;
+      color: #dce8ee;
+      overflow: auto;
+    }
+
+    .diagnosis {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #182027;
+    }
+
+    .small {
+      color: var(--panel-muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1250px) {
+      .page-shell {
+        grid-template-columns: minmax(0, 1fr) 520px;
+        gap: 34px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .page-shell {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        max-width: none;
+      }
+
+      aside {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header-inner,
+      .page-shell {
+        width: min(100% - 24px, 1440px);
+      }
+
+      article {
+        padding: 24px 20px;
+      }
+
+      .debug-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
+
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+
+    var slot = null;
+    var adUnitPath = "";
+    var networkId = "";
+
+    var definedSizes = [
+      [720, 250],
+      [728, 90],
+      [336, 280],
+      [250, 250],
+      [320, 50],
+      [580, 400],
+      [300, 100],
+      [750, 250],
+      [320, 100],
+      [720, 90],
+      [728, 15],
+      [468, 60],
+      [300, 250],
+      [680, 250]
+    ];
+
+    var debugState = {
+      result: "WAITING",
+      renderedSize: "N/A",
+      isEmpty: "N/A",
+      isBackfill: "N/A",
+      campaignId: null,
+      lineItemId: null,
+      creativeId: null,
+      advertiserId: null,
+      creativeTemplateId: null,
+      sourceAgnosticLineItemId: null,
+      sourceAgnosticCreativeId: null,
+      yieldGroupIds: null,
+      responseInfo: null,
+      rawRenderEvent: null,
+      timeline: [],
+      eventTimes: {},
+      errors: []
+    };
+
+    function nowMs() {
+      return performance.now();
+    }
+
+    function fmtMs(value) {
+      return typeof value === "number"
+        ? value.toFixed(1) + " ms"
+        : "N/A";
+    }
+
+    function safeValue(value) {
+      return value === undefined || value === null || value === ""
+        ? "N/A"
+        : value;
+    }
+
+    function sizesToText(sizes) {
+      return sizes.map(function(size) {
+        return Array.isArray(size)
+          ? size[0] + "x" + size[1]
+          : String(size);
+      }).join(", ");
+    }
+
+    function setText(id, value) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.textContent = safeValue(value);
+      }
+    }
+
+    function setHtml(id, html) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = html;
+      }
+    }
+
+    function gamLink(kind, id) {
+      if (!networkId || id === undefined || id === null || id === "") {
+        return "N/A";
+      }
+
+      var base =
+        "https://admanager.google.com/" +
+        encodeURIComponent(networkId);
+
+      var url = "";
+
+      if (kind === "lineItem") {
+        url =
+          base +
+          "#delivery/line_item/detail/" +
+          encodeURIComponent(id);
+      } else if (kind === "creative") {
+        url =
+          base +
+          "#delivery/creative/detail/" +
+          encodeURIComponent(id);
+      } else if (kind === "order") {
+        url =
+          base +
+          "#delivery/order/order_overview/order_id=" +
+          encodeURIComponent(id);
+      }
+
+      return (
+        '<a href="' +
+        url +
+        '" target="_blank" rel="noopener">' +
+        String(id) +
+        "</a>"
+      );
+    }
+
+    function recordEvent(name) {
+      var t = nowMs();
+
+      debugState.eventTimes[name] = t;
+
+      debugState.timeline.push({
+        event: name,
+        t: Number(t.toFixed(1))
+      });
+
+      renderDebug();
+    }
+
+    function getBrowserTimings() {
+      var t = debugState.eventTimes;
+
+      return {
+        "Request → response":
+          t.slotRequested != null &&
+          t.slotResponseReceived != null
+            ? t.slotResponseReceived - t.slotRequested
+            : null,
+
+        "Response → render":
+          t.slotResponseReceived != null &&
+          t.slotRenderEnded != null
+            ? t.slotRenderEnded - t.slotResponseReceived
+            : null,
+
+        "Render → onload":
+          t.slotRenderEnded != null &&
+          t.slotOnload != null
+            ? t.slotOnload - t.slotRenderEnded
+            : null,
+
+        "Request → onload":
+          t.slotRequested != null &&
+          t.slotOnload != null
+            ? t.slotOnload - t.slotRequested
+            : null
+      };
+    }
+
+    function updateViewportAndRequestedSizes() {
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+
+      setText("dbg-viewport", vw + "x" + vh);
+      setText(
+        "dbg-defined-sizes",
+        sizesToText(definedSizes)
+      );
+
+      /*
+       * No size mapping was supplied.
+       * Requested sizes therefore equal defined sizes.
+       */
+      setText(
+        "dbg-requested-sizes",
+        sizesToText(definedSizes)
+      );
+    }
+
+    function renderDebug() {
+      setText(
+        "dbg-network-id",
+        networkId || "N/A"
+      );
+
+      setText(
+        "dbg-ad-unit-path",
+        adUnitPath || "N/A"
+      );
+
+      setText(
+        "dbg-page-url",
+        "https://militarnyi.com"
+      );
+
+      setText(
+        "dbg-div-id",
+        "div-gpt-ad-1790071782003-0"
+      );
+
+      updateViewportAndRequestedSizes();
+
+      setText(
+        "dbg-result",
+        debugState.result
+      );
+
+      setText(
+        "dbg-rendered-size",
+        debugState.renderedSize
+      );
+
+      setText(
+        "dbg-is-empty",
+        debugState.isEmpty
+      );
+
+      setText(
+        "dbg-is-backfill",
+        debugState.isBackfill
+      );
+
+      setHtml(
+        "dbg-campaign-id",
+        gamLink("order", debugState.campaignId)
+      );
+
+      setHtml(
+        "dbg-line-item-id",
+        gamLink("lineItem", debugState.lineItemId)
+      );
+
+      setHtml(
+        "dbg-creative-id",
+        gamLink("creative", debugState.creativeId)
+      );
+
+      setText(
+        "dbg-advertiser-id",
+        debugState.advertiserId
+      );
+
+      setText(
+        "dbg-creative-template-id",
+        debugState.creativeTemplateId
+      );
+
+      setText(
+        "dbg-sa-line-item-id",
+        debugState.sourceAgnosticLineItemId
+      );
+
+      setText(
+        "dbg-sa-creative-id",
+        debugState.sourceAgnosticCreativeId
+      );
+
+      setText(
+        "dbg-yield-group-ids",
+        Array.isArray(debugState.yieldGroupIds)
+          ? debugState.yieldGroupIds.join(", ")
+          : debugState.yieldGroupIds
+      );
+
+      var responsePre =
+        document.getElementById("dbg-response-info");
+
+      if (responsePre) {
+        responsePre.textContent =
+          JSON.stringify(
+            debugState.responseInfo,
+            null,
+            2
+          );
+      }
+
+      var renderPre =
+        document.getElementById("dbg-raw-render");
+
+      if (renderPre) {
+        renderPre.textContent =
+          JSON.stringify(
+            debugState.rawRenderEvent,
+            null,
+            2
+          );
+      }
+
+      var timelinePre =
+        document.getElementById("dbg-timeline");
+
+      if (timelinePre) {
+        timelinePre.textContent =
+          JSON.stringify(
+            {
+              events: debugState.timeline,
+
+              browserObservedTimings:
+                Object.fromEntries(
+                  Object.entries(
+                    getBrowserTimings()
+                  ).map(function(entry) {
+                    return [
+                      entry[0],
+                      fmtMs(entry[1])
+                    ];
+                  })
+                )
+            },
+            null,
+            2
+          );
+      }
+
+      var errorsPre =
+        document.getElementById("dbg-errors");
+
+      if (errorsPre) {
+        errorsPre.textContent =
+          debugState.errors.length
+            ? JSON.stringify(
+                debugState.errors,
+                null,
+                2
+              )
+            : "None captured";
+      }
+
+      var diagnosis =
+        document.getElementById("dbg-diagnosis");
+
+      if (diagnosis) {
+        if (debugState.result === "EMPTY") {
+          diagnosis.innerHTML =
+            "<strong>GPT completed the slot render cycle, but no ad was returned for this slot.</strong><br><br>" +
+            "Possible causes:<br>" +
+            "• no eligible demand<br>" +
+            "• targeting mismatch<br>" +
+            "• pricing/floor restrictions<br>" +
+            "• creative/size eligibility<br>" +
+            "• protections<br>" +
+            "• consent/privacy restrictions<br>" +
+            "• frequency cap<br>" +
+            "• inventory configuration<br>" +
+            "• ad-request/network failure<br><br>" +
+            "The exact GAM no-fill reason cannot be determined from GPT alone.";
+        } else if (
+          debugState.result ===
+          "FILLED — LIMITED INFO"
+        ) {
+          diagnosis.innerHTML =
+            "<strong>The slot rendered content, but GPT did not expose detailed response information for this response.</strong>";
+        } else if (
+          debugState.result === "FILLED"
+        ) {
+          diagnosis.innerHTML =
+            "<strong>GAM returned an ad response and GPT rendered content for this slot.</strong>";
+        } else {
+          diagnosis.textContent =
+            "Waiting for slotRenderEnded.";
+        }
+
+        if (
+          debugState.isBackfill === true ||
+          debugState.isBackfill === "Yes"
+        ) {
+          diagnosis.innerHTML +=
+            "<br><br><strong>Backfill: Yes</strong><br>" +
+            "The rendered ad was served through a backfill demand source. Some GAM delivery IDs may be unavailable.";
+        }
+      }
+    }
+
+    window.addEventListener(
+      "error",
+      function(e) {
+        debugState.errors.push({
+          type: "error",
+          message:
+            e.message || "Unknown error",
+          source:
+            e.filename || "",
+          line:
+            e.lineno || null,
+          column:
+            e.colno || null
+        });
+
+        renderDebug();
+      }
+    );
+
+    window.addEventListener(
+      "unhandledrejection",
+      function(e) {
+        debugState.errors.push({
+          type: "unhandledrejection",
+          reason:
+            e.reason &&
+            e.reason.message
+              ? e.reason.message
+              : String(e.reason)
+        });
+
+        renderDebug();
+      }
+    );
+
+    var resizeTimer = null;
+
+    window.addEventListener(
+      "resize",
+      function() {
+        clearTimeout(resizeTimer);
+
+        resizeTimer =
+          setTimeout(
+            updateViewportAndRequestedSizes,
+            150
+          );
+      }
+    );
+
+    googletag.cmd.push(function() {
+      slot = googletag.defineSlot(
+        "/23303899018/np_mil/all-news-ic1",
+        [
+          [720, 250],
+          [728, 90],
+          [336, 280],
+          [250, 250],
+          [320, 50],
+          [580, 400],
+          [300, 100],
+          [750, 250],
+          [320, 100],
+          [720, 90],
+          [728, 15],
+          [468, 60],
+          [300, 250],
+          [680, 250]
+        ],
+        "div-gpt-ad-1790071782003-0"
+      );
+
+      if (slot) {
+        slot.addService(
+          googletag.pubads()
+        );
+
+        adUnitPath =
+          slot.getAdUnitPath();
+
+        networkId =
+          (
+            adUnitPath.match(
+              /^\/(\d+)\//
+            ) || []
+          )[1] || "";
+
+        googletag.pubads()
+          .addEventListener(
+            "slotRequested",
+            function(e) {
+              if (e.slot !== slot) {
+                return;
+              }
+
+              recordEvent(
+                "slotRequested"
+              );
+            }
+          );
+
+        googletag.pubads()
+          .addEventListener(
+            "slotResponseReceived",
+            function(e) {
+              if (e.slot !== slot) {
+                return;
+              }
+
+              recordEvent(
+                "slotResponseReceived"
+              );
+            }
+          );
+
+        googletag.pubads()
+          .addEventListener(
+            "slotRenderEnded",
+            function(e) {
+              if (e.slot !== slot) {
+                return;
+              }
+
+              recordEvent(
+                "slotRenderEnded"
+              );
+
+              var responseInfo =
+                slot.getResponseInformation();
+
+              var safeResponse =
+                responseInfo
+                  ? {
+                      advertiserId:
+                        safeValue(
+                          responseInfo.advertiserId
+                        ),
+
+                      campaignId:
+                        safeValue(
+                          responseInfo.campaignId
+                        ),
+
+                      lineItemId:
+                        safeValue(
+                          responseInfo.lineItemId
+                        ),
+
+                      creativeId:
+                        safeValue(
+                          responseInfo.creativeId
+                        ),
+
+                      creativeTemplateId:
+                        safeValue(
+                          responseInfo.creativeTemplateId
+                        )
+                    }
+                  : null;
+
+              var safeRenderEvent = {
+                isEmpty:
+                  e.isEmpty,
+
+                size:
+                  e.size || null,
+
+                advertiserId:
+                  e.advertiserId,
+
+                campaignId:
+                  e.campaignId,
+
+                lineItemId:
+                  e.lineItemId,
+
+                creativeId:
+                  e.creativeId,
+
+                creativeTemplateId:
+                  e.creativeTemplateId,
+
+                isBackfill:
+                  e.isBackfill,
+
+                sourceAgnosticLineItemId:
+                  e.sourceAgnosticLineItemId,
+
+                sourceAgnosticCreativeId:
+                  e.sourceAgnosticCreativeId,
+
+                yieldGroupIds:
+                  e.yieldGroupIds || null
+              };
+
+              debugState.isEmpty =
+                e.isEmpty;
+
+              debugState.renderedSize =
+                e.size &&
+                e.size.length === 2
+                  ? e.size[0] +
+                    "x" +
+                    e.size[1]
+                  : "N/A";
+
+              debugState.isBackfill =
+                e.isBackfill === true
+                  ? "Yes"
+                  : (
+                      e.isBackfill === false
+                        ? "No"
+                        : "N/A"
+                    );
+
+              debugState.advertiserId =
+                e.advertiserId != null
+                  ? e.advertiserId
+                  : (
+                      responseInfo &&
+                      responseInfo.advertiserId
+                    );
+
+              debugState.campaignId =
+                e.campaignId != null
+                  ? e.campaignId
+                  : (
+                      responseInfo &&
+                      responseInfo.campaignId
+                    );
+
+              debugState.lineItemId =
+                e.lineItemId != null
+                  ? e.lineItemId
+                  : (
+                      responseInfo &&
+                      responseInfo.lineItemId
+                    );
+
+              debugState.creativeId =
+                e.creativeId != null
+                  ? e.creativeId
+                  : (
+                      responseInfo &&
+                      responseInfo.creativeId
+                    );
+
+              debugState.creativeTemplateId =
+                e.creativeTemplateId != null
+                  ? e.creativeTemplateId
+                  : (
+                      responseInfo &&
+                      responseInfo.creativeTemplateId
+                    );
+
+              debugState.sourceAgnosticLineItemId =
+                e.sourceAgnosticLineItemId;
+
+              debugState.sourceAgnosticCreativeId =
+                e.sourceAgnosticCreativeId;
+
+              debugState.yieldGroupIds =
+                e.yieldGroupIds || null;
+
+              debugState.responseInfo =
+                safeResponse;
+
+              debugState.rawRenderEvent =
+                safeRenderEvent;
+
+              if (e.isEmpty === true) {
+                debugState.result =
+                  "EMPTY";
+              } else if (
+                e.isEmpty === false &&
+                responseInfo
+              ) {
+                debugState.result =
+                  "FILLED";
+              } else if (
+                e.isEmpty === false &&
+                !responseInfo
+              ) {
+                debugState.result =
+                  "FILLED — LIMITED INFO";
+              }
+
+              renderDebug();
+            }
+          );
+
+        googletag.pubads()
+          .addEventListener(
+            "slotOnload",
+            function(e) {
+              if (e.slot !== slot) {
+                return;
+              }
+
+              recordEvent(
+                "slotOnload"
+              );
+            }
+          );
+      } else {
+        debugState.errors.push({
+          type: "slot-definition",
+          message:
+            "googletag.defineSlot() returned null."
+        });
+      }
+
+      googletag.pubads().set(
+        "page_url",
+        "https://militarnyi.com"
+      );
+
+      googletag.pubads()
+        .enableSingleRequest();
+
+      googletag.enableServices();
+
+      renderDebug();
+    });
+
+    window.addEventListener(
+      "DOMContentLoaded",
+      renderDebug
+    );
+  </script>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>
+        Тестова сторінка для рекламного слота
+      </h1>
+
+      <p class="deck">
+        Довга текстова сторінка українською мовою для перевірки
+        поведінки рекламного блока під час прокручування.
+        Праворуч розташовано GAM-слот та діагностичну панель.
+      </p>
+    </div>
+  </header>
+
+  <div class="page-shell">
+    <main>
+      <article>
+        <h2>
+          Тарас Шевченко: мотив дороги, пам’яті й волі
+        </h2>
+
+        <p class="byline">
+          Текстова підкладка з творів, що перебувають
+          у суспільному надбанні.
+        </p>
+
+        <p class="lead">
+          Українська класична література часто починається
+          з простору: дороги, степу, річки, села, далекого
+          обрію. У Шевченка цей простір майже ніколи не буває
+          просто декорацією. Він дихає разом із людиною,
+          зберігає пам’ять, нагадує про втрати й водночас
+          відкриває можливість рухатися далі.
+        </p>
+
+        <blockquote>
+          Реве та стогне Дніпр широкий,<br>
+          Сердитий вітер завива,<br>
+          Додолу верби гне високі,<br>
+          Горами хвилю підійма.
+        </blockquote>
+
+        <p>
+          У цих рядках природа діє як повноправний учасник
+          події. Річка, вітер, верби, хвиля — усе перебуває
+          в русі. Саме тому читач легко відчуває не лише
+          пейзаж, а й напруження. Український літературний
+          краєвид XIX століття часто має цю властивість:
+          зовнішній світ передає внутрішній стан людини
+          без прямого пояснення.
+        </p>
+
+        <p>
+          Для тестової сторінки такий текст зручний ще й
+          практично: довгі абзаци, різна довжина речень,
+          цитати та підзаголовки створюють природний ритм
+          читання. Сторінку можна прокручувати,
+          спостерігаючи, як поводиться реклама у правій
+          колонці, не перетворюючи основний контент на набір
+          штучних «lorem ipsum».
+        </p>
+
+        <h3>Садок вишневий коло хати</h3>
+
+        <blockquote>
+          Садок вишневий коло хати,<br>
+          Хрущі над вишнями гудуть,<br>
+          Плугатарі з плугами йдуть,<br>
+          Співають ідучи дівчата,<br>
+          А матері вечерять ждуть.
+        </blockquote>
+
+        <p>
+          Цей пейзаж побудований зовсім інакше. Тут немає
+          бурі й розбурханого Дніпра, натомість є
+          повторюваний, майже домашній порядок: праця
+          завершується, люди повертаються, вечір збирає
+          родину. Через прості деталі виникає відчуття цілого
+          світу, де кожна дія має своє місце й час.
+        </p>
+
+        <p>
+          Класична поезія часто працює саме так — невелика
+          сцена вміщує значно більше, ніж буквально названо
+          в тексті. Сад, хата, спів, вечеря стають образами
+          дому й тривалості, а читач сам добудовує те,
+          що лишається між рядками.
+        </p>
+
+        <h3>Думи мої, думи мої</h3>
+
+        <blockquote>
+          Думи мої, думи мої,<br>
+          Лихо мені з вами!<br>
+          Нащо стали на папері<br>
+          Сумними рядами?..
+        </blockquote>
+
+        <p>
+          Тут уже немає великої панорами. Поет звертається
+          до власних думок так, наче вони живі співрозмовники.
+          Прийом дуже давній і водночас сучасний: внутрішній
+          монолог перетворюється на діалог, а письмо —
+          на спосіб винести переживання назовні.
+        </p>
+
+        <p>
+          Шевченківська мова легко переходить від особистого
+          до загального. Те, що починається як звернення
+          до власних дум, поступово набуває ширшого значення —
+          про слово, відповідальність, пам’ять і те,
+          кому це слово адресоване. Саме ця здатність
+          змінювати масштаб робить його поезію придатною
+          для довгого, уважного читання.
+        </p>
+
+        <h3>Заповіт</h3>
+
+        <blockquote>
+          Як умру, то поховайте<br>
+          Мене на могилі,<br>
+          Серед степу широкого,<br>
+          На Вкраїні милій.
+        </blockquote>
+
+        <p>
+          Простір знову повертається: могила, степ, Україна,
+          Дніпро. Ліричний голос ніби піднімається над землею
+          й охоплює її широким поглядом. У такій композиції
+          особиста доля стає частиною історичної пам’яті,
+          а пейзаж — способом говорити про належність
+          до країни та спільноти.
+        </p>
+
+        <p>
+          Для сучасного читача важливо й те, що ці тексти
+          пережили власну епоху. Їх читають у школі,
+          цитують у публічному просторі, переосмислюють
+          у музиці, театрі та візуальній культурі.
+          Але найкраще вони працюють саме як текст:
+          повільно, рядок за рядком, коли звичні фрази
+          знову набувають ваги.
+        </p>
+
+        <h3>І знову про дорогу</h3>
+
+        <p>
+          Дорога в класичній літературі — це майже завжди
+          більше, ніж переміщення з одного місця до іншого.
+          Вона може означати втечу, повернення, пошук,
+          заслання, мандрівку, очікування або вибір.
+          У Шевченка рух часто пов’язаний із відстанню
+          між людиною та домом. Чим більшою стає ця відстань,
+          тим сильніше працює пам’ять.
+        </p>
+
+        <p>
+          Саме тому в багатьох творах ландшафт зберігає
+          емоцію. Степ пам’ятає того, хто ним ішов.
+          Річка пам’ятає тих, хто дивився на її береги.
+          Село, садок, дорога й могила утворюють карту
+          не стільки географічну, скільки внутрішню.
+        </p>
+
+        <p>
+          У довгому вебтексті ця літературна властивість
+          створює приємну зміну темпу. Користувач прокручує
+          сторінку не через повторювані технічні блоки,
+          а через зв’язний матеріал. Праворуч тим часом
+          можна перевіряти рекламну поведінку на різних
+          позиціях скролу, висотах viewport і станах
+          завантаження.
+        </p>
+
+        <h3>Тиша як частина тексту</h3>
+
+        <p>
+          У поезії важать не тільки слова, а й паузи.
+          Перенесення рядка, коротка фраза, раптовий знак
+          питання — усе це створює ритм. У прозі схожу роль
+          виконують абзаци. Саме тому ця тестова сторінка
+          має довгі й коротші фрагменти, цитати та відступи:
+          її вертикальний ритм ближчий до справжньої
+          редакційної сторінки.
+        </p>
+
+        <p>
+          Якщо дивитися на неї як на макет новинного чи
+          журнального матеріалу, основна колонка поводиться
+          передбачувано: текст формує висоту документа,
+          а права колонка залишається окремою зоною
+          для реклами. Ніякої sticky-поведінки тут навмисно
+          не додано.
+        </p>
+
+        <h3>Пам’ять і читання</h3>
+
+        <p>
+          Класика не існує лише в підручнику. Вона живе,
+          коли текст перечитують у нових обставинах.
+          Одні й ті самі рядки можуть сприйматися по-різному
+          в юності, у дорозі, далеко від дому або після
+          подій, що змінюють особистий досвід. Це не змінює
+          сам текст, але змінює його контекст — а отже,
+          і те, що читач у ньому помічає.
+        </p>
+
+        <p>
+          У цьому сенсі старі тексти залишаються напрочуд
+          сучасними. Вони нагадують, що мова зберігає
+          не тільки факти, а й способи відчувати: як люди
+          описують втрату, надію, дім, ніч, вітер, дорогу
+          чи очікування. Через це літературний фрагмент
+          може бути сильнішим за будь-який нейтральний
+          заповнювач сторінки.
+        </p>
+
+        <h3>
+          Кілька абзаців для додаткової прокрутки
+        </h3>
+
+        <p>
+          Дніпро в українській культурі часто читається
+          як вісь простору. Він одночасно є реальною річкою,
+          історичним маршрутом і символом зв’язку між
+          різними частинами країни. У поезії ця багатозначність
+          виникає природно: досить назвати воду, берег,
+          високі кручі — і читач уже бачить не одну точку
+          на карті, а цілий культурний образ.
+        </p>
+
+        <p>
+          Степ працює інакше. Він відкритий, майже безмежний,
+          тому легко стає образом свободи або самотності.
+          У ньому мало предметів, які затримують погляд,
+          і через це відстань відчувається сильніше.
+          У прозі степ може сповільнювати час; у поезії —
+          розширювати короткий образ до масштабу країни.
+        </p>
+
+        <p>
+          Хата й сад, навпаки, стискають простір до людського
+          масштабу. Тут важливі дрібні звуки та повторювані
+          дії. Вечір, розмова, спів, робота, запах землі
+          після дня — речі, що не потребують великого сюжету,
+          аби створити відчуття присутності.
+        </p>
+
+        <p>
+          Коли такі образи стоять поруч, літературний текст
+          отримує глибину: широкий краєвид переходить
+          у домашню сцену, історичне — в особисте,
+          урочисте — у тихе. Для читача це природний ритм,
+          а для тестової сторінки — корисна довжина
+          та різноманітна вертикальна структура.
+        </p>
+
+        <p>
+          Наприкінці сторінки можна перевірити, чи не
+          змінилася поведінка рекламного слота після довгого
+          скролу, чи коректно відпрацьовують події GPT
+          і чи не з’явилися помилки в консолі браузера.
+          Діагностична панель праворуч показує лише те,
+          що GPT публічно надає через свої API та події,
+          не підміняючи фактичну відповідь ad server.
+        </p>
+
+        <p class="note">
+          Тарас Шевченко помер 1861 року; наведені твори
+          є суспільним надбанням.
+        </p>
+      </article>
+    </main>
+
+    <aside>
+      <p class="ad-column-label">
+        Google Ad Manager test slot
+      </p>
+
+     <div id="div-gpt-ad-1790071782003-0" style="min-width:300px;min-height:250px;position:-webkit-sticky!important;position:sticky!important;top:20px!important;z-index:999!important;align-self:flex-start!important;height:max-content;"></div>
+
+        <script>
+          googletag.cmd.push(function(){
+            googletag.display(
+              "div-gpt-ad-1790071782003-0"
+            );
+          });
+        </script>
+      </div>
+
+      <section
+        class="debug-panel"
+        aria-label="GPT debug panel"
+      >
+        <h2>GPT Debug Panel</h2>
+
+        <div class="debug-grid">
+          <div class="debug-label">
+            Network ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-network-id"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Ad unit path
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-ad-unit-path"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            page_url
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-page-url"
+          >
+            https://militarnyi.com
+          </div>
+
+          <div class="debug-label">
+            Div ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-div-id"
+          >
+            div-gpt-ad-1790071782003-0
+          </div>
+
+          <div class="debug-label">
+            Defined sizes
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-defined-sizes"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Requested sizes
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-requested-sizes"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Viewport
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-viewport"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Ad result
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-result"
+          >
+            WAITING
+          </div>
+
+          <div class="debug-label">
+            Rendered size
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-rendered-size"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            isEmpty
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-is-empty"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            isBackfill
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-is-backfill"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Campaign/Order ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-campaign-id"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Line item ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-line-item-id"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Creative ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-creative-id"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Advertiser ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-advertiser-id"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Creative Template ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-creative-template-id"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Source-agnostic Line item ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-sa-line-item-id"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Source-agnostic Creative ID
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-sa-creative-id"
+          >
+            N/A
+          </div>
+
+          <div class="debug-label">
+            Yield group IDs
+          </div>
+          <div
+            class="debug-value"
+            id="dbg-yield-group-ids"
+          >
+            N/A
+          </div>
+        </div>
+
+        <h3>Response information</h3>
+        <pre id="dbg-response-info">null</pre>
+
+        <h3>Raw GPT render event</h3>
+        <pre id="dbg-raw-render">null</pre>
+
+        <h3>Timing/event timeline</h3>
+        <pre id="dbg-timeline">{"events":[]}</pre>
+
+        <p class="small">
+          Browser-observed timings, not exact GAM server latency.
+        </p>
+
+        <h3>Page errors</h3>
+        <pre id="dbg-errors">None captured</pre>
+
+        <h3>Diagnosis</h3>
+        <div
+          class="diagnosis"
+          id="dbg-diagnosis"
+        >
+          Waiting for slotRenderEnded.
+        </div>
+
+        <h3>HTTP guide</h3>
+
+        <div>
+          HTTP 200: request succeeded at HTTP level; GAM may still
+          return an ad or blank response.<br>
+          HTTP 204: request succeeded but no ad content was returned.<br>
+          HTTP 4xx: request/config/access problem.<br>
+          HTTP 5xx: server/infrastructure problem.<br>
+          HTTP 302/307: redirect; follow redirect chain.
+        </div>
+
+        <p class="small">
+          HTTP status is not inferred from GPT event data.
+        </p>
+
+        <h3>Browser inspection</h3>
+
+        <div>
+          DevTools → Network/Console (filter gpt/doubleclick)<br>
+          Raw HTTP ad-server response:
+          DevTools → Network → filter gampad/ads
+        </div>
+      </section>
+    </aside>
+  </div>
+</body>
+</html>
