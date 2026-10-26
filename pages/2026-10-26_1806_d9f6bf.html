@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GAM GPT Test — horaires-de-trains.fr</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, sans-serif; color: #172033; background: #f2f5fa; }
+    body { margin: 0; padding: 20px; }
+    main { max-width: 1150px; margin: auto; }
+    h1 { font-size: 1.55rem; }
+    h2 { font-size: 1.2rem; margin: 0 0 12px; }
+    .card { background: white; border: 1px solid #dbe3ee; border-radius: 12px; padding: 18px; margin: 18px 0; box-shadow: 0 2px 8px #11223a0a; }
+    .ad-zone { min-height: 35px; overflow-x: auto; padding: 10px 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+    .field { border-bottom: 1px solid #edf0f4; padding: 7px 0; overflow-wrap: anywhere; }
+    .label { color: #536277; font-size: .78rem; display: block; }
+    .value { font-weight: 600; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f5f7fc; padding: 12px; border-radius: 7px; font-size: .82rem; max-height: 280px; overflow: auto; }
+    .status { font-weight: 800; }
+    .hint { color: #526077; font-size: .9rem; }
+    a { color: #1657a9; }
+  </style>
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+    var PAGE_URL = 'https://horaires-de-trains.fr/';
+    var mappingRulesTop = [
+      { min: [970, 0], sizes: [[970, 90], [728, 90]] },
+      { min: [768, 0], sizes: [[728, 90]] },
+      { min: [468, 0], sizes: [[468, 60], [320, 50]] },
+      { min: [320, 0], sizes: [[320, 50]] },
+      { min: [0, 0], sizes: [] }
+    ];
+    var mappingRulesMain = [
+      { min: [767, 0], sizes: [[468, 60], [320, 100]] },
+      { min: [540, 0], sizes: [[336, 280], [300, 250], [250, 250]] },
+      { min: [300, 0], sizes: [[300, 250], [250, 250]] },
+      { min: [0, 0], sizes: [] }
+    ];
+    var specs = [
+      { key: 'top', divId: 'div-gpt-ad-8264195731', path: '/22908122590,22872463875/horaires_np/top',
+        sizes: [[970, 90], [728, 90], [468, 60], [320, 50]], rules: mappingRulesTop },
+      { key: 'main', divId: 'div-gpt-ad-5831047296', path: '/22908122590,22872463875/horaires_np/main',
+        sizes: [[468, 60], [320, 100], [336, 280], [300, 250], [250, 250]], rules: mappingRulesMain }
+    ];
+    var states = {};
+    var pageErrors = [];
+    var resizeTimer;
+    function safeError(err) {
+      try { return String(err && (err.stack || err.message) || err); }
+      catch (_) { return 'Unknown error'; }
+    }
+    function recordPageError(message) {
+      pageErrors.push(new Date().toISOString() + ': ' + message);
+      renderAll();
+    }
+    window.addEventListener('error', function (e) {
+      recordPageError((e.message || 'Script error') + (e.filename ? ' (' + e.filename + ':' + e.lineno + ')' : ''));
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      recordPageError('Unhandled promise rejection: ' + safeError(e.reason));
+    });
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, function (c) {
+        return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+      });
+    }
+    function format(value) {
+      if (value === undefined || value === null) return 'N/A';
+      if (Array.isArray(value)) return JSON.stringify(value);
+      if (typeof value === 'object') return JSON.stringify(value);
+      return String(value);
+    }
+    function plainSize(s) {
+      if (!s) return null;
+      if (Array.isArray(s)) return s.slice();
+      if (typeof s.getWidth === 'function' && typeof s.getHeight === 'function') return [s.getWidth(), s.getHeight()];
+      return String(s);
+    }
+    function requestedSizes(spec) {
+      var vw = window.innerWidth, vh = window.innerHeight;
+      for (var i = 0; i < spec.rules.length; i++) {
+        var rule = spec.rules[i];
+        if (vw >= rule.min[0] && vh >= rule.min[1]) return rule.sizes;
+      }
+      return [];
+    }
+    function responseSnapshot(info) {
+      if (!info) return null;
+      return {
+        advertiserId: info.advertiserId ?? null,
+        campaignId: info.campaignId ?? null,
+        lineItemId: info.lineItemId ?? null,
+        creativeId: info.creativeId ?? null,
+        creativeTemplateId: info.creativeTemplateId ?? null,
+        isBackfill: info.isBackfill ?? null,
+        sourceAgnosticLineItemId: info.sourceAgnosticLineItemId ?? null,
+        sourceAgnosticCreativeId: info.sourceAgnosticCreativeId ?? null,
+        yieldGroupIds: info.yieldGroupIds ?? null
+      };
+    }
+    function eventSnapshot(e) {
+      return {
+        isEmpty: e.isEmpty ?? null, size: plainSize(e.size),
+        advertiserId: e.advertiserId ?? null, campaignId: e.campaignId ?? null,
+        lineItemId: e.lineItemId ?? null, creativeId: e.creativeId ?? null,
+        creativeTemplateId: e.creativeTemplateId ?? null, isBackfill: e.isBackfill ?? null,
+        sourceAgnosticLineItemId: e.sourceAgnosticLineItemId ?? null,
+        sourceAgnosticCreativeId: e.sourceAgnosticCreativeId ?? null,
+        yieldGroupIds: e.yieldGroupIds ?? null
+      };
+    }
+    function property(state, key) {
+      if (state.event && state.event[key] != null) return state.event[key];
+      if (state.response && state.response[key] != null) return state.response[key];
+      return null;
+    }
+    function gamLink(state, key, route) {
+      var id = property(state, key);
+      if (id === null || id === '') return 'N/A';
+      var network = state.networkId;
+      if (!network) return escapeHTML(id) + ' (network unavailable)';
+      return '<a target="_blank" rel="noopener" href="' +
+        escapeHTML('https://admanager.google.com/' + network + '#' + route + encodeURIComponent(String(id))) +
+        '">' + escapeHTML(id) + '</a>';
+    }
+    function field(label, value, isHTML) {
+      return '<div class="field"><span class="label">' + escapeHTML(label) + '</span><span class="value">' +
+        (isHTML ? value : escapeHTML(format(value))) + '</span></div>';
+    }
+    function elapsed(a, b) {
+      return a == null || b == null ? 'N/A' : (b - a).toFixed(1) + ' ms';
+    }
+    function diagnosis(state) {
+      if (state.result === 'EMPTY') return 'GPT completed the slot render cycle, but no ad was returned for this slot.\n\nPossible causes:\n• no eligible demand\n• targeting mismatch\n• pricing/floor restrictions\n• creative/size eligibility\n• protections\n• consent/privacy restrictions\n• frequency cap\n• inventory configuration\n• ad-request/network failure\n\nThe exact GAM no-fill reason cannot be determined from GPT alone.';
+      if (state.result === 'FILLED') return 'GAM returned an ad response and GPT rendered content for this slot.';
+      if (state.result === 'FILLED — LIMITED INFO') return 'The slot rendered content, but GPT did not expose detailed response information for this response.';
+      return 'Waiting for GPT to finish a render cycle. No fill diagnosis is possible yet.';
+    }
+    function renderOne(spec) {
+      var state = states[spec.key];
+      if (!state) return;
+      var root = document.getElementById('debug-' + spec.key);
+      if (!root) return;
+      var req = requestedSizes(spec);
+      var event = state.event || {};
+      var timeline = state.timeline.map(function (item) {
+        return item.name + ': +' + item.at.toFixed(1) + ' ms (performance.now)';
+      }).join('\n') || 'No events yet';
+      var defined = state.slot && typeof state.slot.getSizes === 'function'
+        ? state.slot.getSizes().map(plainSize) : spec.sizes;
+      var html = '<div class="grid">' +
+        field('Network ID', state.networkId || 'N/A') +
+        field('Ad unit path', state.path || spec.path) +
+        field('page_url', PAGE_URL) +
+        field('Div ID', spec.divId) +
+        field('Defined sizes', defined) +
+        field('Requested sizes', req.length ? req : 'None') +
+        field('Viewport', window.innerWidth + ' × ' + window.innerHeight) +
+        field('Ad result', state.result) +
+        field('Rendered size', event.size ?? 'N/A') +
+        field('isEmpty', event.isEmpty ?? 'N/A') +
+        field('isBackfill', property(state, 'isBackfill') ?? 'N/A') +
+        field('Campaign/Order ID', gamLink(state, 'campaignId', 'delivery/order/order_overview/order_id='), true) +
+        field('Line item ID', gamLink(state, 'lineItemId', 'delivery/line_item/detail/'), true) +
+        field('Creative ID', gamLink(state, 'creativeId', 'delivery/creative/detail/'), true) +
+        field('Advertiser ID', property(state, 'advertiserId')) +
+        field('Creative Template ID', property(state, 'creativeTemplateId')) +
+        field('Source-agnostic Line item ID', property(state, 'sourceAgnosticLineItemId')) +
+        field('Source-agnostic Creative ID', property(state, 'sourceAgnosticCreativeId')) +
+        field('Yield group IDs', property(state, 'yieldGroupIds')) +
+        '</div>';
+      if (!req.length) html += '<p class="hint">Slot disabled by size mapping for this viewport.</p>';
+      if (property(state, 'isBackfill') === true) {
+        html += '<p><strong>Backfill: Yes</strong> — The rendered ad was served through a backfill demand source. Some GAM delivery IDs may be unavailable.</p>';
+      }
+      html += '<h3>Diagnosis</h3><pre>' + escapeHTML(diagnosis(state)) + '</pre>' +
+        '<h3>Response information</h3><pre>' + escapeHTML(JSON.stringify(state.response, null, 2) || 'null') + '</pre>' +
+        '<h3>Raw GPT render event</h3><pre>' + escapeHTML(JSON.stringify(state.event, null, 2) || 'null') + '</pre>' +
+        '<h3>Timing/event timeline</h3><pre>' + escapeHTML(timeline) + '</pre>' +
+        '<p class="hint">Browser-observed timings (not exact GAM server latency):</p>' +
+        '<div class="grid">' +
+        field('Request → response', elapsed(state.times.slotRequested, state.times.slotResponseReceived)) +
+        field('Response → render', elapsed(state.times.slotResponseReceived, state.times.slotRenderEnded)) +
+        field('Render → onload', elapsed(state.times.slotRenderEnded, state.times.slotOnload)) +
+        field('Request → onload', elapsed(state.times.slotRequested, state.times.slotOnload)) +
+        '</div>' +
+        '<h3>Page errors</h3><pre>' + escapeHTML(pageErrors.length ? pageErrors.join('\n') : 'None observed') + '</pre>';
+      root.innerHTML = html;
+    }
+    function renderAll() { specs.forEach(renderOne); }
+    function attachEvents(eventName) {
+      googletag.pubads().addEventListener(eventName, function (e) {
+        specs.forEach(function (spec) {
+          var state = states[spec.key];
+          if (!state || !state.slot || e.slot !== state.slot) return;
+          var at = performance.now();
+          state.timeline.push({name: eventName, at: at});
+          if (eventName in state.times) state.times[eventName] = at;
+          if (eventName === 'slotRenderEnded') {
+            state.event = eventSnapshot(e);
+            var response = null;
+            try { response = state.slot.getResponseInformation(); }
+            catch (err) { recordPageError('Response information error: ' + safeError(err)); }
+            state.response = responseSnapshot(response);
+            state.result = e.isEmpty === true ? 'EMPTY' :
+              e.isEmpty === false ? (response ? 'FILLED' : 'FILLED — LIMITED INFO') : 'WAITING';
+          }
+          renderOne(spec);
+        });
+      });
+    }
+    googletag.cmd.push(function () {
+      var mapping1 = googletag.sizeMapping()
+        .addSize([970, 0], [[970, 90], [728, 90]])
+        .addSize([768, 0], [[728, 90]])
+        .addSize([468, 0], [[468, 60], [320, 50]])
+        .addSize([320, 0], [[320, 50]])
+        .addSize([0, 0], [])
+        .build();
+      var mapping2 = googletag.sizeMapping()
+        .addSize([767, 0], [[468, 60], [320, 100]])
+        .addSize([540, 0], [[336, 280], [300, 250], [250, 250]])
+        .addSize([300, 0], [[300, 250], [250, 250]])
+        .addSize([0, 0], [])
+        .build();
+      var slotTop = googletag.defineSlot(
+        '/22908122590,22872463875/horaires_np/top',
+        [[970, 90], [728, 90], [468, 60], [320, 50]],
+        'div-gpt-ad-8264195731'
+      );
+      if (slotTop) slotTop.defineSizeMapping(mapping1).addService(googletag.pubads());
+      var slotMain = googletag.defineSlot(
+        '/22908122590,22872463875/horaires_np/main',
+        [[468, 60], [320, 100], [336, 280], [300, 250], [250, 250]],
+        'div-gpt-ad-5831047296'
+      );
+      if (slotMain) slotMain.defineSizeMapping(mapping2).addService(googletag.pubads());
+      [slotTop, slotMain].forEach(function(slot, index) {
+        var spec = specs[index];
+        var adUnitPath = slot ? slot.getAdUnitPath() : '';
+        var networkId = (adUnitPath.match(/^\/(\d+)\//) || [])[1] || '';
+        states[spec.key] = {
+          slot: slot, path: adUnitPath, networkId: networkId,
+          result: 'WAITING', event: null, response: null, timeline: [],
+          times: {slotRequested:null, slotResponseReceived:null, slotRenderEnded:null, slotOnload:null}
+        };
+        if (!slot) recordPageError('Slot definition failed: ' + spec.divId);
+      });
+      ['slotRequested', 'slotResponseReceived', 'slotRenderEnded', 'slotOnload',
+       'impressionViewable', 'slotVisibilityChanged'].forEach(attachEvents);
+      googletag.pubads().set('page_url', 'https://horaires-de-trains.fr/');
+      googletag.pubads().enableSingleRequest();
+      googletag.pubads().collapseEmptyDivs();
+      googletag.enableServices();
+      renderAll();
+    });
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderAll, 180);
+    });
+    window.addEventListener('load', renderAll);
+  </script>
+</head>
+<body>
+<main>
+  <h1>Google Ad Manager GPT test — horaires-de-trains.fr</h1>
+  <p class="hint">Two slots, independent diagnostics. Resize the window to inspect responsive size mapping. Browser extensions, blockers, consent, and network policy can affect the result.</p>
+
+  <section class="card">
+    <h2>Top slot</h2>
+    <div class="ad-zone"><div id="div-gpt-ad-8264195731"></div></div>
+    <script>googletag.cmd.push(function(){googletag.display("div-gpt-ad-8264195731");});</script>
+    <h2>Top slot diagnostics</h2>
+    <div id="debug-top">Waiting for GPT...</div>
+  </section>
+
+  <section class="card">
+    <h2>Main slot</h2>
+    <div class="ad-zone"><div id="div-gpt-ad-5831047296"></div></div>
+    <script>googletag.cmd.push(function(){googletag.display("div-gpt-ad-5831047296");});</script>
+    <h2>Main slot diagnostics</h2>
+    <div id="debug-main">Waiting for GPT...</div>
+  </section>
+
+  <section class="card">
+    <h2>Network / HTTP troubleshooting</h2>
+    <p><strong>DevTools → Network/Console</strong> (filter <code>gpt</code>/<code>doubleclick</code>).</p>
+    <p><strong>Raw HTTP ad-server response:</strong> DevTools → Network → filter <code>gampad/ads</code>.</p>
+    <ul>
+      <li><strong>HTTP 200:</strong> request succeeded at HTTP level; GAM may still return an ad or blank response.</li>
+      <li><strong>HTTP 204:</strong> request succeeded but no ad content was returned.</li>
+      <li><strong>HTTP 4xx:</strong> request/config/access problem.</li>
+      <li><strong>HTTP 5xx:</strong> server/infrastructure problem.</li>
+      <li><strong>HTTP 302/307:</strong> redirect; follow redirect chain.</li>
+    </ul>
+    <p class="hint">HTTP status cannot be inferred from GPT events. Check the actual ad request in DevTools.</p>
+  </section>
+</main>
+</body>
+</html>
